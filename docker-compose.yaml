@@ -24,8 +24,8 @@ services: # Nests containers under the services field
       - "4001:80" # Port mapping like `-p` (Maps port 80 to 4000)
     environment:
       - PORT=80
-      - DBHOST=mongodb://db:27017
-      - DBNAME=vaus
+      - AUTH_DBHOST=mongodb://vaus-auth-db:27017
+      - AUTH_DBNAME=vaus-auth-db
 
     depends_on:
       - vaus-auth-db
