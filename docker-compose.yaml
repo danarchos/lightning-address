@@ -1,0 +1,33 @@
+version: "3" # version 3 of docker compose file format
+services: # Nests containers under the services field
+  vaus-auth-db:
+    image: mongo:latest
+    container_name: vaus-auth-db
+    ports:
+      - "4000:27017" # Port mapping like `-p` (Maps port 80 to 4000)
+    restart: always
+
+  vaus-auth: # Configures our video streaming microservice
+    image: vaus-auth # Sets the name of the image
+    build: # Below, paramaters for the build are added
+      context: ./auth # Set the directory for microservice
+      dockerfile: Dockerfile-dev # Sets Dockerfile that builds the image     <- Change to Dockerfile-prod for prod
+    env_file:
+      - ./auth/.env
+
+    volumes:
+      - /tmp/auth/npm-cache:/root/.npm:z
+      - ./auth/src:/usr/src/app/src:z
+
+    container_name: vaus-auth # Names the container
+    ports:
+      - "4001:80" # Port mapping like `-p` (Maps port 80 to 4000)
+    environment:
+      - PORT=80
+      - DBHOST=mongodb://db:27017
+      - DBNAME=vaus
+
+    depends_on:
+      - vaus-auth-db
+
+    restart: "no" #If microservice crashes - don't auto restart
