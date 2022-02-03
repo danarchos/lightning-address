@@ -2,3 +2,4 @@
 .env
 
 auth/node_modules
+auth/yarn.lock
