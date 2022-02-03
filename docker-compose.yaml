@@ -13,7 +13,7 @@ services: # Nests containers under the services field
       context: ./auth # Set the directory for microservice
       dockerfile: Dockerfile-dev # Sets Dockerfile that builds the image     <- Change to Dockerfile-prod for prod
     env_file:
-      - ./auth/.env
+      - .env
 
     volumes:
       - /tmp/auth/npm-cache:/root/.npm:z
