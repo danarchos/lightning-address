@@ -3,3 +3,6 @@
 
 auth/node_modules
 auth/yarn.lock
+
+video/node_modules
+video/yarn.lock
