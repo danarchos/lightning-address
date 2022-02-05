@@ -14,6 +14,6 @@ mongoose.connect(process.env.VIDEO_DBHOST, {
 });
 
 // Hello World
-exports.helloWorld = async (req, res) => {
-  res.status(200).json({ success: true, message: "worked" });
+exports.save = async (req, res) => {
+  res.status(200).json({ success: true, body: req.body });
 };

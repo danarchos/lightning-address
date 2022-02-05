@@ -1,9 +1,9 @@
 const express = require("express");
 
-const { helloWorld } = require("../controllers/video");
+const { save } = require("../controllers/video");
 
 const router = express.Router();
 
-router.route("/").get(helloWorld);
+router.route("/").post(save);
 
 module.exports = router;

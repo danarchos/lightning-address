@@ -9,7 +9,7 @@ app.use(cors());
 app.use(express.json());
 const PORT = process.env.PORT || 5000;
 
-const auth = require("./routes/video");
-app.use("/api/v1", auth);
+const video = require("./routes/video");
+app.use("/api/v1", video);
 
 app.listen(PORT, console.log(`VIDEO Service up and running`));
