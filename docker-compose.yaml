@@ -31,3 +31,35 @@ services: # Nests containers under the services field
       - vaus-auth-db
 
     restart: "no" #If microservice crashes - don't auto restart
+
+  vaus-video-db:
+    image: mongo:latest
+    container_name: vaus-video-db
+    ports:
+      - "4002:27017" # Port mapping like `-p` (Maps port 80 to 4000)
+    restart: always
+
+  vaus-video: # Configures our video streaming microservice
+    image: vaus-video # Sets the name of the image
+    build: # Below, paramaters for the build are added
+      context: ./video # Set the directory for microservice
+      dockerfile: Dockerfile-dev # Sets Dockerfile that builds the image     <- Change to Dockerfile-prod for prod
+    env_file:
+      - .env
+
+    volumes:
+      - /tmp/video/npm-cache:/root/.npm:z
+      - ./video/src:/usr/src/app/src:z
+
+    container_name: vaus-video # Names the container
+    ports:
+      - "4003:80" # Port mapping like `-p` (Maps port 80 to 4000)
+    environment:
+      - PORT=80
+      - VIDEO_DBHOST=mongodb://vaus-video-db:27017
+      - VIDEO_DBNAME=vaus-video-db
+
+    depends_on:
+      - vaus-video-db
+
+    restart: "no" #If microservice crashes - don't auto restart
