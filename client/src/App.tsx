@@ -71,9 +71,8 @@ const App = () => {
     if (file) {
       const data = await upload("video", file);
       setUrl(data);
-
+      console.log({ data });
       const ext = data.split(".").pop();
-      console.log({ ext });
       setThumbnail(data.replace(ext, "jpg"));
     }
   };
