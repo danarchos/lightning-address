@@ -13,7 +13,9 @@ mongoose.connect(process.env.VIDEO_DBHOST, {
   useUnifiedTopology: true,
 });
 
-// Hello World
+// Save Video
 exports.save = async (req, res) => {
+  Video.create(req.body);
+
   res.status(200).json({ success: true, body: req.body });
 };

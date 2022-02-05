@@ -12,7 +12,7 @@ const App = () => {
   const upload = async (resourceType: any, file: any) => {
     if (!file) return;
     const formData = new FormData();
-    formData.append("upload_preset", "youtubeclone");
+    formData.append("upload_preset", "vaus-video");
     formData.append("file", file);
 
     let toastId: any = null;
