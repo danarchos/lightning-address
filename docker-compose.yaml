@@ -79,3 +79,17 @@ services: # Nests containers under the services field
       - REACT_APP_CLOUDINARY_ENDPOINT=https://api.cloudinary.com/v1_1/dyjrvtift
 
     restart: "always"
+
+  rabbit:
+    image: rabbitmq:3.8.1-management
+    container_name: rabbit
+
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+
+    expose:
+      - "5672"
+      - "15672"
+
+    restart: "always"
