@@ -6,3 +6,6 @@ auth/yarn.lock
 
 video/node_modules
 video/yarn.lock
+
+history/node_modules
+history/yarn.lock

@@ -1,8 +1,8 @@
 const express = require("express");
-const { helloWorld } = require("../controllers/history");
+const { videoViewed } = require("../controllers/history");
 
 const router = express.Router();
 
-router.route("/").get(helloWorld);
+router.route("/").get(videoViewed);
 
 module.exports = router;

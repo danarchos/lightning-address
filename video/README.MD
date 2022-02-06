@@ -1,6 +1,4 @@
-# Authentication Microservice
+# Video Microservice
 
-- JWT tokens
-- Own Database with mongodb
+- Stores video metadata
 - Docker
-- Docker Compose to orchestrate both db and auth service

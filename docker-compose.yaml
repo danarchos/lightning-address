@@ -1,49 +1,53 @@
-version: "3" # version 3 of docker compose file format
-services: # Nests containers under the services field
-  vaus-auth-db:
-    image: mongo:latest
-    container_name: vaus-auth-db
-    ports:
-      - "4000:27017" # Port mapping like `-p` (Maps port 80 to 4000)
-    restart: always
+version: "3"
+services:
+  # Auth microservice db - - - - - - - -
+  # vaus-auth-db:
+  #   image: mongo:latest
+  #   container_name: vaus-auth-db
+  #   ports:
+  #     - "4000:27017"
+  #   restart: always
 
-  vaus-auth: # Configures our video streaming microservice
-    image: vaus-auth # Sets the name of the image
-    build: # Below, paramaters for the build are added
-      context: ./auth # Set the directory for microservice
-      dockerfile: Dockerfile-dev # Sets Dockerfile that builds the image     <- Change to Dockerfile-prod for prod
-    env_file:
-      - .env
+  # Auth microservice - - - - - - - -
+  # vaus-auth:
+  #   image: vaus-auth
+  #   build:
+  #     context: ./auth
+  #     dockerfile: Dockerfile-dev
+  #   env_file:
+  #     - .env
 
-    volumes:
-      - /tmp/auth/npm-cache:/root/.npm:z
-      - ./auth/src:/usr/src/app/src:z
+  #   volumes:
+  #     - /tmp/auth/npm-cache:/root/.npm:z
+  #     - ./auth/src:/usr/src/app/src:z
 
-    container_name: vaus-auth # Names the container
-    ports:
-      - "4001:80" # Port mapping like `-p` (Maps port 80 to 4000)
-    environment:
-      - PORT=80
-      - AUTH_DBHOST=mongodb://vaus-auth-db:27017
-      - AUTH_DBNAME=vaus-auth-db
+  #   container_name: vaus-auth
+  #   ports:
+  #     - "4001:80"
+  #   environment:
+  #     - PORT=80
+  #     - AUTH_DBHOST=mongodb://vaus-auth-db:27017
+  #     - AUTH_DBNAME=vaus-auth-db
 
-    depends_on:
-      - vaus-auth-db
+  #   depends_on:
+  #     - vaus-auth-db
 
-    restart: "no" #If microservice crashes - don't auto restart
+  #   restart: "no"
 
+  # Video microservice database - - - - - - - -
   vaus-video-db:
     image: mongo:latest
     container_name: vaus-video-db
     ports:
-      - "4002:27017" # Port mapping like `-p` (Maps port 80 to 4000)
+      - "4002:27017"
     restart: always
 
-  vaus-video: # Configures our video streaming microservice
-    image: vaus-video # Sets the name of the image
-    build: # Below, paramaters for the build are added
-      context: ./video # Set the directory for microservice
-      dockerfile: Dockerfile-dev # Sets Dockerfile that builds the image     <- Change to Dockerfile-prod for prod
+  # Video microservice - - - - - - - -
+  vaus-video:
+    image: vaus-video
+    build:
+      context: ./video
+      dockerfile: Dockerfile-dev
     env_file:
       - .env
 
@@ -51,35 +55,52 @@ services: # Nests containers under the services field
       - /tmp/video/npm-cache:/root/.npm:z
       - ./video/src:/usr/src/app/src:z
 
-    container_name: vaus-video # Names the container
+    container_name: vaus-video
     ports:
-      - "4003:80" # Port mapping like `-p` (Maps port 80 to 4000)
+      - "4003:80"
     environment:
       - PORT=80
       - VIDEO_DBHOST=mongodb://vaus-video-db:27017
       - VIDEO_DBNAME=vaus-video-db
+      - RABBIT=amqp://guest:guest@rabbit:5672
 
     depends_on:
       - vaus-video-db
 
-    restart: "no" #If microservice crashes - don't auto restart
+    restart: "no"
 
-  vaus-client:
-    image: vaus-client
-    build:
-      context: ./client
-      dockerfile: Dockerfile
-    env_file: ./client/.env
-
-    container_name: vaus-client
+  # History microservice database - - - - - - - -
+  vaus-history-db:
+    image: mongo:latest
+    container_name: vaus-history-db
     ports:
-      - "4004:3000"
+      - "4004:27017"
+    restart: always
+
+  # History microservice - - - - - - - -
+  vaus-history:
+    image: vaus-history
+    build:
+      context: ./history
+      dockerfile: Dockerfile-dev
+    env_file:
+      - .env
+    volumes:
+      - /tmp/history/npm-cache:/root/.npm:z
+      - ./history/src:/usr/src/app/src:z
+
+    container_name: vaus-history
+    ports:
+      - "4005:80"
     environment:
-      - REACT_APP_VIDEO_API_BASE_URL=http://localhost:4003/api/v1
-      - REACT_APP_CLOUDINARY_ENDPOINT=https://api.cloudinary.com/v1_1/dyjrvtift
+      - PORT=80
+      - HISTORY_DBHOST=mongodb://vaus-history-db:27017
+      - HISTORY_DBNAME=vaus-history-db
+      - RABBIT=amqp://guest:guest@rabbit:5672
 
-    restart: "always"
+    restart: "no"
 
+  # RabbitMQ - - - - - - - -
   rabbit:
     image: rabbitmq:3.8.1-management
     container_name: rabbit
@@ -93,3 +114,20 @@ services: # Nests containers under the services field
       - "15672"
 
     restart: "always"
+
+  # Frontend React Client - - - - - - - -
+  # vaus-client:
+  #   image: vaus-client
+  #   build:
+  #     context: ./client
+  #     dockerfile: Dockerfile
+  #   env_file: ./client/.env
+
+  #   container_name: vaus-client
+  #   ports:
+  #     - "4006:3000"
+  #   environment:
+  #     - REACT_APP_VIDEO_API_BASE_URL=http://localhost:4003/api/v1
+  #     - REACT_APP_CLOUDINARY_ENDPOINT=https://api.cloudinary.com/v1_1/dyjrvtift
+
+  #   restart: "always"

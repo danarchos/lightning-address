@@ -1,17 +1,27 @@
-// const asyncHandler = require("../middlewares/asyncHandlerFn");
-// const mongoose = require("mongoose");
+const mongoose = require("mongoose");
 
-// const bcrypt = require("bcryptjs");
-// const jwt = require("jsonwebtoken");
+mongoose.connect(process.env.HISTORY_DBHOST, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});
 
-const JWT_EXPIRE = process.env.JWT_EXPIRE;
-const JWT_SECRET = process.env.JWT_SECRET;
+function consumeViewedMessage(msg) {
+  // Handler for coming messages.
+  console.log("Received a 'viewed' message");
 
-// mongoose.connect(process.env.VIDEO_DBHOST, {
-//   useNewUrlParser: true,
-//   useUnifiedTopology: true,
-// });
+  const parsedMsg = JSON.parse(msg.content.toString()); // Parse the JSON message.
 
-exports.helloWorld = async (req, res) => {
+  return videosCollection
+    .insertOne({ videoPath: parsedMsg.videoPath }) // Record the "view" in the database.
+    .then(() => {
+      console.log("Acknowledging message was handled.");
+
+      messageChannel.ack(msg); // If there is no error, acknowledge the message.
+    });
+}
+
+exports.videoViewed = async (req, res) => {
+  const msg = "";
+  const parsedMsg = JSON.parse(msg).content.toString();
   res.status(200).json({ success: true, message: "Hello World" });
 };
