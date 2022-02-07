@@ -17,7 +17,6 @@ exports.save = async (req, res) => {
 
 // Save Video
 exports.view = async (req, res) => {
-  console.log(`Publishing message on "viewed" queue.`);
   const msg = { videoPath: "testing" };
   const jsonMsg = JSON.stringify(msg);
   try {
