@@ -11,7 +11,7 @@ mongoose.connect(process.env.VIDEO_DBHOST, {
 // Save Video
 exports.save = async (req, res) => {
   Video.create(req.body);
-
+  console.log("hit", req);
   res.status(200).json({ success: true, body: req.body });
 };
 

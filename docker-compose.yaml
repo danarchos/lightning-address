@@ -1,92 +1,92 @@
 version: "3"
 services:
   # Auth microservice - - - - - - - -
-  vaus-auth:
-    image: vaus-auth
-    build:
-      context: ./auth
-      dockerfile: Dockerfile-dev
-    env_file:
-      - ./auth/.env
+  # vaus-auth:
+  #   image: vaus-auth
+  #   build:
+  #     context: ./auth
+  #     dockerfile: Dockerfile-dev
+  #   env_file:
+  #     - ./auth/.env
 
-    volumes:
-      - /tmp/auth/npm-cache:/root/.npm:z
-      - ./auth/src:/usr/src/app/src:z
+  #   volumes:
+  #     - /tmp/auth/npm-cache:/root/.npm:z
+  #     - ./auth/src:/usr/src/app/src:z
 
-    container_name: vaus-auth
-    ports:
-      - "4000:80"
-    environment:
-      - PORT=80
-      - USER_API_BASE=http://vaus-user:80
+  #   container_name: vaus-auth
+  #   ports:
+  #     - "4000:80"
+  #   environment:
+  #     - PORT=80
+  #     - USER_API_BASE=http://vaus-user:80
 
-    restart: "no"
+  #   restart: "no"
 
   # User microservice db - - - - - - - -
-  vaus-user-db:
-    image: mongo:latest
-    container_name: vaus-user-db
-    ports:
-      - "4001:27017"
-    restart: always
-
-  # User microservice - - - - - - - -
-  vaus-user:
-    image: vaus-user
-    build:
-      context: ./user
-      dockerfile: Dockerfile-dev
-
-    volumes:
-      - /tmp/user/npm-cache:/root/.npm:z
-      - ./user/src:/usr/src/app/src:z
-
-    container_name: vaus-user
-    ports:
-      - "4002:80"
-    environment:
-      - PORT=80
-      - USER_DBHOST=mongodb://vaus-user-db:27017
-      - USER_DBNAME=vaus-user-db
-
-    depends_on:
-      - vaus-user-db
-
-    restart: "no"
-
-  # # Video microservice database - - - - - - - -
-  # vaus-video-db:
+  # vaus-user-db:
   #   image: mongo:latest
-  #   container_name: vaus-video-db
+  #   container_name: vaus-user-db
   #   ports:
-  #     - "4003:27017"
+  #     - "4001:27017"
   #   restart: always
 
-  # # Video microservice - - - - - - - -
-  # vaus-video:
-  #   image: vaus-video
+  # User microservice - - - - - - - -
+  # vaus-user:
+  #   image: vaus-user
   #   build:
-  #     context: ./video
+  #     context: ./user
   #     dockerfile: Dockerfile-dev
 
   #   volumes:
-  #     - /tmp/video/npm-cache:/root/.npm:z
-  #     - ./video/src:/usr/src/app/src:z
+  #     - /tmp/user/npm-cache:/root/.npm:z
+  #     - ./user/src:/usr/src/app/src:z
 
-  #   container_name: vaus-video
+  #   container_name: vaus-user
   #   ports:
-  #     - "4004:80"
+  #     - "4002:80"
   #   environment:
   #     - PORT=80
-  #     - VIDEO_DBHOST=mongodb://vaus-video-db:27017
-  #     - VIDEO_DBNAME=vaus-video-db
-  #     - RABBIT=amqp://guest:guest@rabbit:5672
+  #     - USER_DBHOST=mongodb://vaus-user-db:27017
+  #     - USER_DBNAME=vaus-user-db
 
   #   depends_on:
-  #     - vaus-video-db
-  #     - rabbit
+  #     - vaus-user-db
 
   #   restart: "no"
+
+  # Video microservice database - - - - - - - -
+  vaus-video-db:
+    image: mongo:latest
+    container_name: vaus-video-db
+    ports:
+      - "4003:27017"
+    restart: always
+
+  # Video microservice - - - - - - - -
+  vaus-video:
+    image: vaus-video
+    build:
+      context: ./video
+      dockerfile: Dockerfile-dev
+
+    volumes:
+      - /tmp/video/npm-cache:/root/.npm:z
+      - ./video/src:/usr/src/app/src:z
+
+    container_name: vaus-video
+    ports:
+      - "4004:80"
+    environment:
+      - PORT=80
+      - VIDEO_DBHOST=mongodb://vaus-video-db:27017
+      - VIDEO_DBNAME=vaus-video-db
+      - RABBIT=amqp://guest:guest@rabbit:5672
+
+    depends_on:
+      - vaus-video-db
+      - rabbit
+
+    restart: "no"
 
   # # History microservice database - - - - - - - -
   # vaus-history-db:
@@ -122,34 +122,33 @@ services:
   #     - vaus-history-db
   #     - rabbit
 
-  # # RabbitMQ - - - - - - - -
-  # rabbit:
-  #   image: rabbitmq:3.8.1-management
-  #   container_name: rabbit
+  # RabbitMQ - - - - - - - -
+  rabbit:
+    image: rabbitmq:3.8.1-management
+    container_name: rabbit
 
-  #   ports:
-  #     - "5672:5672"
-  #     - "15672:15672"
+    ports:
+      - "5672:5672"
+      - "15672:15672"
 
-  #   expose:
-  #     - "5672"
-  #     - "15672"
+    expose:
+      - "5672"
+      - "15672"
 
-  #   restart: "always"
+    restart: "always"
 
-  # Frontend React Client - - - - - - - -
+  # # Frontend React Client - - - - - - - -
   # vaus-client:
   #   image: vaus-client
   #   build:
   #     context: ./client
-  #     dockerfile: Dockerfile
-  #   env_file: ./client/.env
+  #     dockerfile: Dockerfile-dev
 
   #   container_name: vaus-client
   #   ports:
   #     - "4007:3000"
   #   environment:
-  #     - REACT_APP_VIDEO_API_BASE_URL=http://localhost:4003/api/v1
+  #     - REACT_APP_VIDEO_API_BASE_URL=http://vaus-video:80/api/v1
   #     - REACT_APP_CLOUDINARY_ENDPOINT=https://api.cloudinary.com/v1_1/dyjrvtift
 
   #   restart: "always"

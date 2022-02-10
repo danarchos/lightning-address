@@ -14,8 +14,7 @@ class RabbitMQ {
   }
 
   async assertExchange() {
-    const response = await this.channel.assertExchange("viewed", "fanout");
-    console.log({ response });
+    await this.channel.assertExchange("viewed", "fanout");
   }
 
   close() {
