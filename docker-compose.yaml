@@ -7,7 +7,7 @@ services:
       context: ./auth
       dockerfile: Dockerfile-dev
     env_file:
-      - .env
+      - ./auth/.env
 
     volumes:
       - /tmp/auth/npm-cache:/root/.npm:z
@@ -36,8 +36,6 @@ services:
     build:
       context: ./user
       dockerfile: Dockerfile-dev
-    env_file:
-      - .env
 
     volumes:
       - /tmp/user/npm-cache:/root/.npm:z
@@ -70,8 +68,6 @@ services:
   #   build:
   #     context: ./video
   #     dockerfile: Dockerfile-dev
-  #   env_file:
-  #     - .env
 
   #   volumes:
   #     - /tmp/video/npm-cache:/root/.npm:z
@@ -106,8 +102,7 @@ services:
   #   build:
   #     context: ./history
   #     dockerfile: Dockerfile-dev
-  #   env_file:
-  #     - .env
+
   #   volumes:
   #     - /tmp/history/npm-cache:/root/.npm:z
   #     - ./history/src:/usr/src/app/src:z
