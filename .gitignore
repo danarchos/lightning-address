@@ -4,6 +4,9 @@
 auth/node_modules
 auth/yarn.lock
 
+user/node_modules
+user/yarn.lock
+
 video/node_modules
 video/yarn.lock
 

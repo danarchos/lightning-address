@@ -7,9 +7,15 @@ class RabbitMQ {
     try {
       const connection = await amqp.connect(process.env.RABBIT); // Connect to the RabbitMQ server.
       this.channel = await connection.createChannel();
+      await this.assertExchange();
     } catch (err) {
       console.log("ERROR", err);
     }
+  }
+
+  async assertExchange() {
+    const response = await this.channel.assertExchange("viewed", "fanout");
+    console.log({ response });
   }
 
   close() {

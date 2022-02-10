@@ -4,8 +4,8 @@ Built with Docker and Node Express
 
 ### Microservices included
 
-- Authentication
-- Authentication Database (MongoDB)
+- User
+- User Database (MongoDB)
 
 Add .env:
 

@@ -17,15 +17,9 @@ exports.save = async (req, res) => {
 
 // Save Video
 exports.view = async (req, res) => {
-  const msg = { videoPath: "testing" };
-  const jsonMsg = JSON.stringify(msg);
+  const jsonMsg = JSON.stringify(req.body);
   try {
-    const attempt = await RabbitMQ.channel.publish(
-      "",
-      "viewed",
-      Buffer.from(jsonMsg)
-    );
-    console.log({ attempt });
+    await RabbitMQ.channel.publish("viewed", "", Buffer.from(jsonMsg)); // Publish message to the "viewed" exchange.
   } catch (err) {
     console.log({ err });
   }
