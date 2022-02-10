@@ -18,8 +18,10 @@ services:
       - "4000:80"
     environment:
       - PORT=80
+      - USER_API_BASE=http://vaus-user:80
 
     restart: "no"
+
   # User microservice db - - - - - - - -
   vaus-user-db:
     image: mongo:latest
@@ -54,91 +56,91 @@ services:
 
     restart: "no"
 
-  # Video microservice database - - - - - - - -
-  vaus-video-db:
-    image: mongo:latest
-    container_name: vaus-video-db
-    ports:
-      - "4003:27017"
-    restart: always
+  # # Video microservice database - - - - - - - -
+  # vaus-video-db:
+  #   image: mongo:latest
+  #   container_name: vaus-video-db
+  #   ports:
+  #     - "4003:27017"
+  #   restart: always
 
-  # Video microservice - - - - - - - -
-  vaus-video:
-    image: vaus-video
-    build:
-      context: ./video
-      dockerfile: Dockerfile-dev
-    env_file:
-      - .env
+  # # Video microservice - - - - - - - -
+  # vaus-video:
+  #   image: vaus-video
+  #   build:
+  #     context: ./video
+  #     dockerfile: Dockerfile-dev
+  #   env_file:
+  #     - .env
 
-    volumes:
-      - /tmp/video/npm-cache:/root/.npm:z
-      - ./video/src:/usr/src/app/src:z
+  #   volumes:
+  #     - /tmp/video/npm-cache:/root/.npm:z
+  #     - ./video/src:/usr/src/app/src:z
 
-    container_name: vaus-video
-    ports:
-      - "4004:80"
-    environment:
-      - PORT=80
-      - VIDEO_DBHOST=mongodb://vaus-video-db:27017
-      - VIDEO_DBNAME=vaus-video-db
-      - RABBIT=amqp://guest:guest@rabbit:5672
+  #   container_name: vaus-video
+  #   ports:
+  #     - "4004:80"
+  #   environment:
+  #     - PORT=80
+  #     - VIDEO_DBHOST=mongodb://vaus-video-db:27017
+  #     - VIDEO_DBNAME=vaus-video-db
+  #     - RABBIT=amqp://guest:guest@rabbit:5672
 
-    depends_on:
-      - vaus-video-db
-      - rabbit
+  #   depends_on:
+  #     - vaus-video-db
+  #     - rabbit
 
-    restart: "no"
+  #   restart: "no"
 
-  # History microservice database - - - - - - - -
-  vaus-history-db:
-    image: mongo:latest
-    container_name: vaus-history-db
-    ports:
-      - "4005:27017"
-    restart: always
+  # # History microservice database - - - - - - - -
+  # vaus-history-db:
+  #   image: mongo:latest
+  #   container_name: vaus-history-db
+  #   ports:
+  #     - "4005:27017"
+  #   restart: always
 
-  # History microservice - - - - - - - -
-  vaus-history:
-    image: vaus-history
-    build:
-      context: ./history
-      dockerfile: Dockerfile-dev
-    env_file:
-      - .env
-    volumes:
-      - /tmp/history/npm-cache:/root/.npm:z
-      - ./history/src:/usr/src/app/src:z
+  # # History microservice - - - - - - - -
+  # vaus-history:
+  #   image: vaus-history
+  #   build:
+  #     context: ./history
+  #     dockerfile: Dockerfile-dev
+  #   env_file:
+  #     - .env
+  #   volumes:
+  #     - /tmp/history/npm-cache:/root/.npm:z
+  #     - ./history/src:/usr/src/app/src:z
 
-    container_name: vaus-history
-    ports:
-      - "4006:80"
-    environment:
-      - PORT=80
-      - HISTORY_DBHOST=mongodb://vaus-history-db:27017
-      - HISTORY_DBNAME=vaus-history-db
-      - RABBIT=amqp://guest:guest@rabbit:5672
+  #   container_name: vaus-history
+  #   ports:
+  #     - "4006:80"
+  #   environment:
+  #     - PORT=80
+  #     - HISTORY_DBHOST=mongodb://vaus-history-db:27017
+  #     - HISTORY_DBNAME=vaus-history-db
+  #     - RABBIT=amqp://guest:guest@rabbit:5672
 
-    restart: "no"
+  #   restart: "no"
 
-    depends_on:
-      - vaus-history-db
-      - rabbit
+  #   depends_on:
+  #     - vaus-history-db
+  #     - rabbit
 
-  # RabbitMQ - - - - - - - -
-  rabbit:
-    image: rabbitmq:3.8.1-management
-    container_name: rabbit
+  # # RabbitMQ - - - - - - - -
+  # rabbit:
+  #   image: rabbitmq:3.8.1-management
+  #   container_name: rabbit
 
-    ports:
-      - "5672:5672"
-      - "15672:15672"
+  #   ports:
+  #     - "5672:5672"
+  #     - "15672:15672"
 
-    expose:
-      - "5672"
-      - "15672"
+  #   expose:
+  #     - "5672"
+  #     - "15672"
 
-    restart: "always"
+  #   restart: "always"
 
   # Frontend React Client - - - - - - - -
   # vaus-client:
