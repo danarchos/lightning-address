@@ -5,14 +5,12 @@ Built with Docker and Node Express
 ### Microservices included
 
 - User
+- Auth
+- Video
+- Video History
+- Video Database (MongoDB)
 - User Database (MongoDB)
-
-Add .env:
-
-```
-JWT_EXPIRE=30
-JWT_SECRET=CreateARandomString4723913012
-```
+- Video History Database (MongoDB)
 
 Start:
 
