@@ -4,10 +4,9 @@ const bcrypt = require("bcryptjs");
 const Schema = mongoose.Schema;
 
 const VideoSchema = new Schema({
-  title: String,
-  url: String,
-  dislikes: Number,
-  likes: Number,
+  title: { type: String, required: true },
+  url: { type: String, required: true },
+  lightningAddress: { type: String, required: true },
 });
 
 const Video = mongoose.model("Video", VideoSchema);

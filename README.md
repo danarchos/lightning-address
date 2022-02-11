@@ -8,6 +8,8 @@ Built with Docker and Node Express
 - Auth
 - Video
 - Video History
+- Bitcoin Lightning
+- Bitcoin Lightning Database (MongoDB)
 - Video Database (MongoDB)
 - User Database (MongoDB)
 - Video History Database (MongoDB)

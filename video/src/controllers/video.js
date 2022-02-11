@@ -10,12 +10,19 @@ mongoose.connect(process.env.VIDEO_DBHOST, {
 
 // Save Video
 exports.save = async (req, res) => {
-  Video.create(req.body);
-  console.log("hit", req);
-  res.status(200).json({ success: true, body: req.body });
+  try {
+    const newVideo = await Video.create(req.body);
+    if (!newVideo) {
+      res.status(400).json({ success: false });
+      return;
+    }
+    res.status(200).json({ success: true, body: req.body });
+  } catch (err) {
+    res.status(500).json({ success: false, message: "Incorrect data fields" });
+  }
 };
 
-// Save Video
+// View Video
 exports.view = async (req, res) => {
   const jsonMsg = JSON.stringify(req.body);
   try {
