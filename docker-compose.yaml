@@ -1,58 +1,58 @@
 version: "3"
 services:
   # Auth microservice - - - - - - - -
-  # vaus-auth:
-  #   image: vaus-auth
-  #   build:
-  #     context: ./auth
-  #     dockerfile: Dockerfile-dev
-  #   env_file:
-  #     - ./auth/.env
+  vaus-auth:
+    image: vaus-auth
+    build:
+      context: ./auth
+      dockerfile: Dockerfile-dev
+    env_file:
+      - ./auth/.env
 
-  #   volumes:
-  #     - /tmp/auth/npm-cache:/root/.npm:z
-  #     - ./auth/src:/usr/src/app/src:z
+    volumes:
+      - /tmp/auth/npm-cache:/root/.npm:z
+      - ./auth/src:/usr/src/app/src:z
 
-  #   container_name: vaus-auth
-  #   ports:
-  #     - "4000:80"
-  #   environment:
-  #     - PORT=80
-  #     - USER_API_BASE=http://vaus-user:80
+    container_name: vaus-auth
+    ports:
+      - "4000:80"
+    environment:
+      - PORT=80
+      - USER_API_BASE=http://vaus-user:80
 
-  #   restart: "no"
+    restart: "no"
 
   # User microservice db - - - - - - - -
-  # vaus-user-db:
-  #   image: mongo:latest
-  #   container_name: vaus-user-db
-  #   ports:
-  #     - "4001:27017"
-  #   restart: always
+  vaus-user-db:
+    image: mongo:latest
+    container_name: vaus-user-db
+    ports:
+      - "4001:27017"
+    restart: always
 
   # User microservice - - - - - - - -
-  # vaus-user:
-  #   image: vaus-user
-  #   build:
-  #     context: ./user
-  #     dockerfile: Dockerfile-dev
+  vaus-user:
+    image: vaus-user
+    build:
+      context: ./user
+      dockerfile: Dockerfile-dev
 
-  #   volumes:
-  #     - /tmp/user/npm-cache:/root/.npm:z
-  #     - ./user/src:/usr/src/app/src:z
+    volumes:
+      - /tmp/user/npm-cache:/root/.npm:z
+      - ./user/src:/usr/src/app/src:z
 
-  #   container_name: vaus-user
-  #   ports:
-  #     - "4002:80"
-  #   environment:
-  #     - PORT=80
-  #     - USER_DBHOST=mongodb://vaus-user-db:27017
-  #     - USER_DBNAME=vaus-user-db
+    container_name: vaus-user
+    ports:
+      - "4002:80"
+    environment:
+      - PORT=80
+      - USER_DBHOST=mongodb://vaus-user-db:27017
+      - USER_DBNAME=vaus-user-db
 
-  #   depends_on:
-  #     - vaus-user-db
+    depends_on:
+      - vaus-user-db
 
-  #   restart: "no"
+    restart: "no"
 
   # Video microservice database - - - - - - - -
   vaus-video-db:
@@ -80,6 +80,7 @@ services:
       - PORT=80
       - VIDEO_DBHOST=mongodb://vaus-video-db:27017
       - VIDEO_DBNAME=vaus-video-db
+      - AUTH_API_BASE=http://vaus-auth:80
       - RABBIT=amqp://guest:guest@rabbit:5672
 
     depends_on:
@@ -89,38 +90,71 @@ services:
     restart: "no"
 
   # # History microservice database - - - - - - - -
-  # vaus-history-db:
-  #   image: mongo:latest
-  #   container_name: vaus-history-db
-  #   ports:
-  #     - "4005:27017"
-  #   restart: always
+  vaus-history-db:
+    image: mongo:latest
+    container_name: vaus-history-db
+    ports:
+      - "4005:27017"
+    restart: always
 
-  # # History microservice - - - - - - - -
-  # vaus-history:
-  #   image: vaus-history
-  #   build:
-  #     context: ./history
-  #     dockerfile: Dockerfile-dev
+  # History microservice - - - - - - - -
+  vaus-history:
+    image: vaus-history
+    build:
+      context: ./history
+      dockerfile: Dockerfile-dev
 
-  #   volumes:
-  #     - /tmp/history/npm-cache:/root/.npm:z
-  #     - ./history/src:/usr/src/app/src:z
+    volumes:
+      - /tmp/history/npm-cache:/root/.npm:z
+      - ./history/src:/usr/src/app/src:z
 
-  #   container_name: vaus-history
-  #   ports:
-  #     - "4006:80"
-  #   environment:
-  #     - PORT=80
-  #     - HISTORY_DBHOST=mongodb://vaus-history-db:27017
-  #     - HISTORY_DBNAME=vaus-history-db
-  #     - RABBIT=amqp://guest:guest@rabbit:5672
+    container_name: vaus-history
+    ports:
+      - "4006:80"
+    environment:
+      - PORT=80
+      - HISTORY_DBHOST=mongodb://vaus-history-db:27017
+      - HISTORY_DBNAME=vaus-history-db
+      - RABBIT=amqp://guest:guest@rabbit:5672
 
-  #   restart: "no"
+    restart: "no"
 
-  #   depends_on:
-  #     - vaus-history-db
-  #     - rabbit
+    depends_on:
+      - vaus-history-db
+      - rabbit
+
+    # Lightning microservice database - - - - - - - -
+  vaus-lightning-db:
+    image: mongo:latest
+    container_name: vaus-lightning-db
+    ports:
+      - "4007:27017"
+    restart: always
+
+  # Lightning microservice - - - - - - - -
+  vaus-lightning:
+    image: vaus-lightning
+    build:
+      context: ./lightning
+      dockerfile: Dockerfile-dev
+
+    volumes:
+      - /tmp/lightning/npm-cache:/root/.npm:z
+      - ./lightning/src:/usr/src/app/src:z
+
+    container_name: vaus-lightning
+    ports:
+      - "4008:80"
+    environment:
+      - PORT=80
+      - LIGHTNING_DBHOST=mongodb://vaus-lightning-db:27017
+      - LIGHTNINGs_DBNAME=vaus-lightning-db
+
+    depends_on:
+      - vaus-lightning-db
+      - rabbit
+
+    restart: "no"
 
   # RabbitMQ - - - - - - - -
   rabbit:
@@ -136,19 +170,3 @@ services:
       - "15672"
 
     restart: "always"
-
-  # # Frontend React Client - - - - - - - -
-  # vaus-client:
-  #   image: vaus-client
-  #   build:
-  #     context: ./client
-  #     dockerfile: Dockerfile-dev
-
-  #   container_name: vaus-client
-  #   ports:
-  #     - "4007:3000"
-  #   environment:
-  #     - REACT_APP_VIDEO_API_BASE_URL=http://vaus-video:80/api/v1
-  #     - REACT_APP_CLOUDINARY_ENDPOINT=https://api.cloudinary.com/v1_1/dyjrvtift
-
-  #   restart: "always"

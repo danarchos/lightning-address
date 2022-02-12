@@ -1,4 +1,3 @@
-const asyncHandler = require("../middlewares/asyncHandlerFn");
 const mongoose = require("mongoose");
 const Video = require("../models/Video");
 const RabbitMQ = require("../services/rabbitMQ");
@@ -10,8 +9,17 @@ mongoose.connect(process.env.VIDEO_DBHOST, {
 
 // Save Video
 exports.save = async (req, res) => {
+  const { username, userId } = req.decoded;
+  const { lightningAddress, url, title } = req.body;
+
   try {
-    const newVideo = await Video.create(req.body);
+    const newVideo = await Video.create({
+      username,
+      userId,
+      lightningAddress,
+      url,
+      title,
+    });
     if (!newVideo) {
       res.status(400).json({ success: false });
       return;

@@ -15,6 +15,6 @@ RabbitMQ.connect();
 const PORT = process.env.PORT || 5000;
 
 const history = require("./routes/history");
-app.use("/api/v1", history);
+app.use("/api", history);
 
 app.listen(PORT, console.log(`HISTORY Service up and running`));

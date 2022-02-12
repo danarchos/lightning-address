@@ -11,10 +11,7 @@ exports.signup = asyncHandler(async (req, res) => {
   try {
     const {
       data: { success, user },
-    } = await axios.post(
-      `${process.env.USER_API_BASE}/api/v1/addUser`,
-      req.body
-    );
+    } = await axios.post(`${process.env.USER_API_BASE}/api/addUser`, req.body);
 
     if (!success) {
       res
@@ -22,12 +19,12 @@ exports.signup = asyncHandler(async (req, res) => {
         .json({ success: false, message: "Failed to save user in USER API" });
       return;
     }
-
-    const payload = { id: user.id, username: user.username };
+    const payload = { userId: user._id, username: user.username };
     const token = jwt.sign(payload, JWT_SECRET, {
       expiresIn: JWT_EXPIRE,
     });
-    res.status(200).json({ success: true, token });
+
+    res.status(200).json({ success: true, token, expiresIn: JWT_EXPIRE });
   } catch (err) {
     console.log({ err });
   }
@@ -39,9 +36,7 @@ exports.login = async (req, res) => {
   try {
     const {
       data: { success, user },
-    } = await axios.get(
-      `${process.env.USER_API_BASE}/api/v1/user?email=${email}`
-    );
+    } = await axios.get(`${process.env.USER_API_BASE}/api/user?email=${email}`);
 
     if (!success) {
       res
@@ -67,5 +62,23 @@ exports.login = async (req, res) => {
   } catch (err) {
     console.log(err);
     res.status(500).json({ success: false, message: "Internal server error" });
+  }
+};
+
+exports.veryifyDecodeUser = async (req, res) => {
+  try {
+    const decoded = await jwt.verify(req.query.token, process.env.JWT_SECRET);
+
+    res.status(200).json({
+      success: true,
+      message: "Verify decode loud and clear over",
+      decoded,
+    });
+  } catch (err) {
+    console.log({ err });
+    res.status(403).json({
+      success: true,
+      message: "You cannot perform this upload.",
+    });
   }
 };

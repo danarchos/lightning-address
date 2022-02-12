@@ -10,6 +10,6 @@ app.use(express.json());
 const PORT = process.env.PORT || 5000;
 
 const user = require("./routes/user");
-app.use("/api/v1", user);
+app.use("/api", user);
 
 app.listen(PORT, console.log(`USER Service up and running`));
