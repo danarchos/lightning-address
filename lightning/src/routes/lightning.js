@@ -1,8 +1,8 @@
 const express = require("express");
-const { helloWorld } = require("../controllers/lightning");
+const { generateInvoice } = require("../controllers/lightning");
 
 const router = express.Router();
 
-router.route("/").get(helloWorld);
+router.route("/pay").post(generateInvoice);
 
 module.exports = router;

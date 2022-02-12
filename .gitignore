@@ -12,3 +12,6 @@ video/yarn.lock
 
 history/node_modules
 history/yarn.lock
+
+lightning/node_modules
+lightning/yarn.lock
