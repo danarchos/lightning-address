@@ -1,6 +1,6 @@
 import { EventEmitter } from "events";
 // import { LndNode } from "./Supabase";
-import * as lightning from "LightningService";
+import * as lightning from "lightning";
 import { AuthenticatedLnd, payViaPaymentRequest } from "lightning";
 
 export const NodeEvents = {
@@ -9,7 +9,7 @@ export const NodeEvents = {
   bountyCreated: "bounty-created",
 };
 
-class Lightning extends EventEmitter {
+class LightningService extends EventEmitter {
   private lnd: AuthenticatedLnd | null = null;
   private lnurlSecretMap: Record<string, string> = {};
   private lnurlK1Map: Record<string, string> = {};
@@ -59,19 +59,20 @@ class Lightning extends EventEmitter {
         socket: process.env.HOST,
       });
 
+      console.log({ lnd });
+
       const msg = Buffer.from("authorization test").toString("base64");
 
-      await lightning.signMessage({
-        lnd,
-        message: msg,
-      });
+      // await lightning.signMessage({
+      //   lnd,
+      //   message: msg,
+      // });
 
       const { public_key } = await lightning.getIdentity({ lnd });
-      this.syncInvoices(lnd);
       console.log("connected lnd");
 
       this.lnd = lnd;
-      this.pubkey = public_key;
+      // this.pubkey = public_key;
     } catch (err) {
       console.log({ err });
     }
@@ -103,7 +104,6 @@ class Lightning extends EventEmitter {
 
   async cancelHodl(id: string) {
     if (!this.lnd) return null;
-    console.log({ id });
     const response = await lightning.cancelHodlInvoice({
       id,
       lnd: this.lnd,
@@ -145,4 +145,4 @@ class Lightning extends EventEmitter {
   }
 }
 
-export default new Lightning();
+export default new LightningService();
