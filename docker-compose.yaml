@@ -149,6 +149,8 @@ services:
       - PORT=80
       - LIGHTNING_DBHOST=mongodb://vaus-lightning-db:27017
       - LIGHTNINGs_DBNAME=vaus-lightning-db
+    env_file:
+      - ./lightning/.env
 
     depends_on:
       - vaus-lightning-db
