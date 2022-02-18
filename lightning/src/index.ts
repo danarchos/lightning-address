@@ -1,26 +1,38 @@
 import express from "express";
-const opennode = require("opennode");
+import expressWs from "express-ws";
+import OpenNode, { OpenNodeEvents } from "./OpenNode";
 
-const app = express();
+const cors = require("cors");
 
+export const SocketEvents = {
+  invoiceUpdated: "invoice-updated",
+  invoicePaid: "invoice-paid",
+  bountyCreated: "bounty-created",
+};
 const PORT = process.env.PORT || 5000;
 
-const charge = async () => {
-  await opennode.setCredentials(process.env.OPENNODE_API_KEY_DEV, "dev");
-  try {
-    const charge = await opennode.createCharge({
-      amount: 10.5,
-      currency: "USD",
-      callback_url: "https://example.com/webhook/opennode",
-      auto_settle: false,
-    });
-    console.log({ charge });
-  } catch (error: any) {
-    console.error(`${error.status} | ${error.message}`);
-  }
-};
+const { app } = expressWs(express());
+
+app.use(cors());
+
+const lnRoutes = require("./routes/ln");
+app.use("/api", lnRoutes);
 
 app.listen(PORT, () => {
-  console.log(process.env.OPENNODE_API_KEY_DEV);
-  charge();
+  app.ws("/events", (ws, req) => {
+    const bountyToListenTo = req.query.bountyId;
+
+    const paymentsListener = (info: any) => {
+      if (info.bountyId === bountyToListenTo) {
+        const event = { type: SocketEvents.invoiceUpdated, data: info };
+        ws.send(JSON.stringify(event));
+      }
+    };
+
+    OpenNode.on(OpenNodeEvents.invoicePaid, paymentsListener);
+
+    ws.on("close", () => {
+      OpenNode.off(OpenNodeEvents.invoicePaid, paymentsListener);
+    });
+  });
 });
