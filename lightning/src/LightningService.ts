@@ -69,10 +69,10 @@ class LightningService extends EventEmitter {
       // });
 
       const { public_key } = await lightning.getIdentity({ lnd });
-      console.log("connected lnd");
+      console.log("connected lnd", public_key);
 
       this.lnd = lnd;
-      // this.pubkey = public_key;
+      this.pubkey = public_key;
     } catch (err) {
       console.log({ err });
     }
