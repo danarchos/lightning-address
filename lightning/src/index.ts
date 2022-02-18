@@ -1,17 +1,26 @@
 import express from "express";
-import LightningService from "./LightningService";
-
-require("dotenv").config();
+const opennode = require("opennode");
 
 const app = express();
 
 const PORT = process.env.PORT || 5000;
 
+const charge = async () => {
+  await opennode.setCredentials(process.env.OPENNODE_API_KEY_DEV, "dev");
+  try {
+    const charge = await opennode.createCharge({
+      amount: 10.5,
+      currency: "USD",
+      callback_url: "https://example.com/webhook/opennode",
+      auto_settle: false,
+    });
+    console.log({ charge });
+  } catch (error: any) {
+    console.error(`${error.status} | ${error.message}`);
+  }
+};
+
 app.listen(PORT, () => {
-  console.log(`LIGHTNING Service up and running`);
-  const node = process.env.NODE_PUBKEY;
-  const macaroon = process.env.MACAROON;
-  const host = process.env.HOST;
-  console.log(node, host, macaroon);
-  LightningService.connect();
+  console.log(process.env.OPENNODE_API_KEY_DEV);
+  charge();
 });
