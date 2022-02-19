@@ -1,8 +1,16 @@
 const express = require("express");
-const { getInvoice } = require("../controllers/ln");
+const {
+  getWallet,
+  generateInvoice,
+  trigger,
+  events,
+} = require("../controllers/ln");
 
 const router = express.Router();
 
-router.route("/getInvoice").get(getInvoice);
+router.route("/generateInvoice").get(generateInvoice);
+router.route("/getWallet").get(getWallet);
+router.route("/trigger").post(trigger);
+router.ws("/events", events);
 
 module.exports = router;
