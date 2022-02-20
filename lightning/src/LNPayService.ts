@@ -7,17 +7,31 @@ export const LNPayEvents = {
 };
 
 class LNPayService extends EventEmitter {
-  createWallet = async () => {};
+  createWallet = async (username: string) => {
+    try {
+      const client = LNPay({
+        secretKey: "sak_g0jIDuMNqq9XsOufjY8D3IyV4ERssDwS",
+      });
+      const wallet = await client.createWallet({
+        user_label: username,
+      });
+      const newWallet = wallet.access_keys["Wallet Admin"][0];
+      console.log({ newWallet });
+      return newWallet;
+    } catch (error: any) {
+      console.error(error);
+    }
+  };
 
   generateInvoice = async () => {
     const tempKey = "waka_OWuCnc5qfAPc9uJ1W215qTL";
     try {
-      const wallet = LNPay({
+      const client = LNPay({
         secretKey: "sak_g0jIDuMNqq9XsOufjY8D3IyV4ERssDwS",
         walletAccessKey: tempKey,
       });
 
-      const invoice = await wallet.generateInvoice({
+      const invoice = await client.generateInvoice({
         num_satoshis: 100,
         passThru: {
           // This id needs to be uniquely set by the client or in app.ws(/events)
@@ -37,11 +51,11 @@ class LNPayService extends EventEmitter {
   getWallet = async () => {
     const tempKey = "waka_OWuCnc5qfAPc9uJ1W215qTL";
     try {
-      const wallet = LNPay({
+      const client = LNPay({
         secretKey: "sak_g0jIDuMNqq9XsOufjY8D3IyV4ERssDwS",
         walletAccessKey: tempKey,
       });
-      const balance = await wallet.getBalance();
+      const balance = await client.getBalance();
       return balance;
     } catch (error: any) {
       console.error(error);

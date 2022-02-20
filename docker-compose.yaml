@@ -48,6 +48,7 @@ services:
       - PORT=80
       - USER_DBHOST=mongodb://vaus-user-db:27017
       - USER_DBNAME=vaus-user-db
+      - LN_API_BASE=http://vaus-lightning:80
 
     depends_on:
       - vaus-user-db

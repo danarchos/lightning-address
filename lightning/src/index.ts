@@ -12,6 +12,7 @@ export const SocketEvents = {
 const PORT = process.env.PORT || 5000;
 const { app } = expressWs(express());
 
+app.use(express.json());
 app.use(cors());
 
 const lnRoutes = require("./routes/ln");

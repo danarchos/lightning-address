@@ -19,7 +19,13 @@ exports.signup = asyncHandler(async (req, res) => {
         .json({ success: false, message: "Failed to save user in USER API" });
       return;
     }
-    const payload = { userId: user._id, username: user.username };
+
+    const payload = {
+      userId: user._id,
+      username: user.username,
+      walletId: user.walletId,
+    };
+
     const token = jwt.sign(payload, JWT_SECRET, {
       expiresIn: JWT_EXPIRE,
     });

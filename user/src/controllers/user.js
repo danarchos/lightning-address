@@ -2,6 +2,8 @@ const asyncHandler = require("../middlewares/asyncHandlerFn");
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 
+const { installWallet } = require("../utils/wallets");
+
 const User = require("../models/User");
 
 mongoose.connect(process.env.USER_DBHOST, {
@@ -13,9 +15,11 @@ mongoose.connect(process.env.USER_DBHOST, {
 exports.addUser = asyncHandler(async (req, res) => {
   const newUser = new User(req.body);
 
+  const { data } = await installWallet(req.body.username);
+  newUser.walletId = data.wallet_id;
+
   const salt = await bcrypt.genSalt(10);
   newUser.password = await bcrypt.hash(newUser.password, salt);
-
   const user = await newUser.save();
 
   if (user) {
