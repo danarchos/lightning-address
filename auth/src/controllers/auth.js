@@ -57,7 +57,12 @@ exports.login = async (req, res) => {
       return;
     }
 
-    const payload = { id: user.id };
+    const payload = {
+      userId: user._id,
+      username: user.username,
+      walletId: user.walletId,
+    };
+
     const token = jwt.sign(payload, JWT_SECRET, {
       expiresIn: JWT_EXPIRE,
     });
@@ -66,15 +71,16 @@ exports.login = async (req, res) => {
       .status(200)
       .json({ success: true, token, message: "Successfully logged in" });
   } catch (err) {
-    console.log(err);
+    console.log("Error with auth -> /login endpoint");
     res.status(500).json({ success: false, message: "Internal server error" });
   }
 };
 
 exports.veryifyDecodeUser = async (req, res) => {
+  console.log("hey there", req.query.token);
   try {
     const decoded = await jwt.verify(req.query.token, process.env.JWT_SECRET);
-
+    console.log({ decoded });
     res.status(200).json({
       success: true,
       message: "Verify decode loud and clear over",
