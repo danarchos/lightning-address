@@ -31,17 +31,14 @@ exports.addUser = asyncHandler(async (req, res) => {
 
 // GET user
 exports.user = asyncHandler(async (req, res) => {
-  const { email, id } = req.query;
+  const { email } = req.query;
 
-  console.log({ id });
+  let user;
+  if (email) user = await User.findOne({ email });
 
-  // let user;
-  // if (email) user = await User.findOne({ email });
-  // if (id) user = await User.findOne({ id });
-
-  // if (!user) {
-  //   res.status(400).json({ success: false, message: "No email found" });
-  //   return;
-  // }
-  // res.status(200).json({ success: true, user });
+  if (!user) {
+    res.status(400).json({ success: false, message: "No email found" });
+    return;
+  }
+  res.status(200).json({ success: true, user });
 });

@@ -12,11 +12,15 @@ class LNPayService extends EventEmitter {
       const client = LNPay({
         secretKey: "sak_g0jIDuMNqq9XsOufjY8D3IyV4ERssDwS",
       });
-      const wallet = await client.createWallet({
-        user_label: username,
-      });
-      const newWallet = wallet.access_keys["Wallet Admin"][0];
-      console.log({ newWallet });
+
+      // const wallet = await client.createWallet({
+      //   user_label: username,
+      // });
+      // const newWallet = wallet.access_keys["Wallet Admin"][0];
+
+      // TESTING AUTH
+      const newWallet = "test";
+
       return newWallet;
     } catch (error: any) {
       console.error(error);
