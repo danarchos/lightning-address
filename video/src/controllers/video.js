@@ -12,8 +12,6 @@ exports.save = async (req, res) => {
   const { username, userId, walletId } = req.decoded;
   const { url, title } = req.body;
 
-  console.log("hit save", { username, userId, walletId, url, title });
-
   try {
     const newVideo = await Video.create({
       username,
