@@ -19,7 +19,7 @@ class LNPayService extends EventEmitter {
       // const newWallet = wallet.access_keys["Wallet Admin"][0];
 
       // TESTING AUTH
-      const newWallet = "test";
+      const newWallet = "waka_T6xytEWyvIhImThC4dZj4GXl";
 
       return newWallet;
     } catch (error: any) {
