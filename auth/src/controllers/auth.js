@@ -77,7 +77,6 @@ exports.login = async (req, res) => {
 };
 
 exports.veryifyDecodeUser = async (req, res) => {
-  console.log("hey there", req.query.token);
   try {
     const decoded = await jwt.verify(req.query.token, process.env.JWT_SECRET);
     console.log({ decoded });

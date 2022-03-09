@@ -1,7 +1,7 @@
 const axios = require("axios");
 
 exports.protect = async (req, res, next) => {
-  console.log("hey", req.headers);
+  console.log("hitting protect");
   if (!req.headers.authorization) {
     return next({
       message: "You need to be logged in to visit this route",
