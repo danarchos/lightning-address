@@ -66,3 +66,28 @@ exports.videoById = async (req, res) => {
     res.status(500).json({ success: false });
   }
 };
+
+exports.like = async (req, res) => {
+  try {
+    const jsonMsg = JSON.stringify(req.body);
+
+    await RabbitMQ.channel.publish("liked", "", Buffer.from(jsonMsg)); // Publish message to the "liked" exchange.
+    res.status(200).json({ success: true });
+  } catch (err) {
+    console.log({ err });
+    res.status(500).json({ success: false });
+  }
+};
+
+exports.dislike = async (req, res) => {
+  console.log("hit dislike");
+  try {
+    const jsonMsg = JSON.stringify(req.body);
+
+    await RabbitMQ.channel.publish("disliked", "", Buffer.from(jsonMsg)); // Publish message to the "disliked" exchange.
+    res.status(200).json({ success: true });
+  } catch (err) {
+    console.log({ err });
+    res.status(500).json({ success: false });
+  }
+};
