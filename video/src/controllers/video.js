@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const axios = require("axios");
 const Video = require("../models/Video");
 const RabbitMQ = require("../services/rabbitMQ");
 
@@ -68,11 +69,16 @@ exports.videoById = async (req, res) => {
 };
 
 exports.like = async (req, res) => {
-  try {
-    const jsonMsg = JSON.stringify(req.body);
+  const { videoId, userId } = req.body;
 
-    await RabbitMQ.channel.publish("liked", "", Buffer.from(jsonMsg)); // Publish message to the "liked" exchange.
-    res.status(200).json({ success: true });
+  try {
+    const newLike = await axios.post(`${process.env.HISTORY_API_BASE}/like`, {
+      like: true,
+      videoId,
+      userId,
+    });
+
+    res.status(200).json({ ...newLike.data });
   } catch (err) {
     console.log({ err });
     res.status(500).json({ success: false });
@@ -80,12 +86,14 @@ exports.like = async (req, res) => {
 };
 
 exports.dislike = async (req, res) => {
-  console.log("hit dislike");
+  const { videoId, userId } = req.body;
   try {
-    const jsonMsg = JSON.stringify(req.body);
+    const newDislike = await axios.post(
+      `${process.env.HISTORY_API_BASE}/like`,
+      { like: false, videoId, userId }
+    );
 
-    await RabbitMQ.channel.publish("disliked", "", Buffer.from(jsonMsg)); // Publish message to the "disliked" exchange.
-    res.status(200).json({ success: true });
+    res.status(200).json({ ...newDislike.data });
   } catch (err) {
     console.log({ err });
     res.status(500).json({ success: false });

@@ -82,6 +82,7 @@ services:
       - VIDEO_DBHOST=mongodb://vaus-video-db:27017
       - VIDEO_DBNAME=vaus-video-db
       - AUTH_API_BASE=http://vaus-auth:80
+      - HISTORY_API_BASE=http://vaus-history:80/api
       - RABBIT=amqp://guest:guest@rabbit:5672
 
     depends_on:
@@ -90,39 +91,39 @@ services:
 
     restart: "no"
 
-  # # History microservice database - - - - - - - -
-  # vaus-history-db:
-  #   image: mongo:latest
-  #   container_name: vaus-history-db
-  #   ports:
-  #     - "4005:27017"
-  #   restart: always
+  # History microservice database - - - - - - - -
+  vaus-history-db:
+    image: mongo:latest
+    container_name: vaus-history-db
+    ports:
+      - "4005:27017"
+    restart: always
 
   # History microservice - - - - - - - -
-  # vaus-history:
-  #   image: vaus-history
-  #   build:
-  #     context: ./history
-  #     dockerfile: Dockerfile-dev
+  vaus-history:
+    image: vaus-history
+    build:
+      context: ./history
+      dockerfile: Dockerfile-dev
 
-  #   volumes:
-  #     - /tmp/history/npm-cache:/root/.npm:z
-  #     - ./history/src:/usr/src/app/src:z
+    volumes:
+      - /tmp/history/npm-cache:/root/.npm:z
+      - ./history/src:/usr/src/app/src:z
 
-  #   container_name: vaus-history
-  #   ports:
-  #     - "4006:80"
-  #   environment:
-  #     - PORT=80
-  #     - HISTORY_DBHOST=mongodb://vaus-history-db:27017
-  #     - HISTORY_DBNAME=vaus-history-db
-  #     - RABBIT=amqp://guest:guest@rabbit:5672
+    container_name: vaus-history
+    ports:
+      - "4006:80"
+    environment:
+      - PORT=80
+      - HISTORY_DBHOST=mongodb://vaus-history-db:27017
+      - HISTORY_DBNAME=vaus-history-db
+      - RABBIT=amqp://guest:guest@rabbit:5672
 
-  #   restart: "no"
+    restart: "no"
 
-  #   depends_on:
-  #     - vaus-history-db
-  #     - rabbit
+    depends_on:
+      - vaus-history-db
+      - rabbit
 
   # Lightning microservice database - - - - - - - -
   vaus-lightning-db:
