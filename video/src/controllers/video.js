@@ -44,9 +44,7 @@ exports.view = async (req, res) => {
 
 exports.videosByUser = async (req, res) => {
   const { userId } = req.query;
-  console.log("hitting", userId);
   try {
-    console.log("hit this with user", userId);
     const results = await Video.find({ userId });
     console.log({ results });
     res.status(200).json({ success: true, results });
@@ -57,11 +55,33 @@ exports.videosByUser = async (req, res) => {
 };
 
 exports.videoById = async (req, res) => {
-  const { id } = req.query;
+  const { id, userId } = req.query;
   try {
-    console.log("hit this video id", id);
     const result = await Video.findById(id);
-    res.status(200).json({ success: true, result });
+
+    const {
+      data: { numLikes, numDislikes, hasUserDisliked, hasUserLiked },
+    } = await axios.get(
+      `${process.env.HISTORY_API_BASE}/like-info?videoId=${id}&userId=${userId}`
+    );
+
+    res.status(200).json({
+      success: true,
+      id: result.id,
+      title: result.title,
+      url: result.url,
+      author: {
+        username: result.username,
+        userId: result.userId,
+        walletId: result.walletId,
+      },
+      likes: {
+        numLikes,
+        numDislikes,
+        hasUserDisliked,
+        hasUserLiked,
+      },
+    });
   } catch (err) {
     console.log({ err });
     res.status(500).json({ success: false });

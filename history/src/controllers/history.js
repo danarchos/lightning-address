@@ -26,3 +26,27 @@ exports.addLike = async (req, res) => {
     res.status(500).json({ success: false });
   }
 };
+
+exports.likeInfo = async (req, res) => {
+  const { videoId, userId } = req.body;
+
+  try {
+    numLikes = await Like.count({ like: false });
+    numDislikes = await Like.count({ like: false });
+    hasUserLiked = await Like.findOne({ userId, videoId, like: true });
+    hasUserDisliked = await Like.findOne({ userId, videoId, like: false });
+
+    res.status(200).json({
+      success: true,
+      videoId,
+      userId,
+      numLikes,
+      numDislikes,
+      hasUserDisliked,
+      hasUserLiked,
+    });
+  } catch (err) {
+    console.log("Failed to get like info");
+    res.status(500).json({ success: false });
+  }
+};
