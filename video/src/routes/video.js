@@ -12,11 +12,11 @@ const {
 
 const router = express.Router();
 
-router.route("/videosByUser").get(protect, videosByUser);
+router.route("/videosByUser").get(videosByUser);
 router.route("/video").get(videoById);
 router.route("/").post(protect, save);
 router.route("/view").post(view);
-router.route("/like").post(like);
-router.route("/dislike").post(dislike);
+router.route("/like").post(protect, like);
+router.route("/dislike").post(protect, dislike);
 
 module.exports = router;

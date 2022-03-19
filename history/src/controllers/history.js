@@ -28,13 +28,22 @@ exports.addLike = async (req, res) => {
 };
 
 exports.likeInfo = async (req, res) => {
-  const { videoId, userId } = req.body;
+  const { videoId, userId } = req.query;
 
   try {
-    numLikes = await Like.count({ like: false });
+    numLikes = await Like.count({ like: true });
     numDislikes = await Like.count({ like: false });
     hasUserLiked = await Like.findOne({ userId, videoId, like: true });
     hasUserDisliked = await Like.findOne({ userId, videoId, like: false });
+
+    console.log({
+      videoId,
+      userId,
+      numLikes,
+      numDislikes,
+      hasUserLiked,
+      hasUserDisliked,
+    });
 
     res.status(200).json({
       success: true,

@@ -8,6 +8,9 @@ const JWT_SECRET = process.env.JWT_SECRET;
 
 // SIGN UP - Creates user model, adds salt to password, creates a JWT
 exports.signup = asyncHandler(async (req, res) => {
+  const { password, email, username } = req.body;
+
+  console.log({ password, email, username });
   try {
     const {
       data: { success, user },
@@ -39,6 +42,8 @@ exports.signup = asyncHandler(async (req, res) => {
 // LOGIN
 exports.login = async (req, res) => {
   const { password, email } = req.body;
+
+  console.log({ password, email });
   try {
     const {
       data: { success, user },

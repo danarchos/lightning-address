@@ -44,9 +44,9 @@ exports.view = async (req, res) => {
 
 exports.videosByUser = async (req, res) => {
   const { userId } = req.query;
+
   try {
     const results = await Video.find({ userId });
-    console.log({ results });
     res.status(200).json({ success: true, results });
   } catch (err) {
     console.log({ err });
@@ -56,6 +56,7 @@ exports.videosByUser = async (req, res) => {
 
 exports.videoById = async (req, res) => {
   const { id, userId } = req.query;
+
   try {
     const result = await Video.findById(id);
 
@@ -67,7 +68,7 @@ exports.videoById = async (req, res) => {
 
     res.status(200).json({
       success: true,
-      id: result.id,
+      _id: result.id,
       title: result.title,
       url: result.url,
       author: {
@@ -106,6 +107,7 @@ exports.like = async (req, res) => {
 };
 
 exports.dislike = async (req, res) => {
+  console.log("called");
   const { videoId, userId } = req.body;
   try {
     const newDislike = await axios.post(
