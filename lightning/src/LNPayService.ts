@@ -18,21 +18,29 @@ class LNPayService extends EventEmitter {
       // });
       // const newWallet = wallet.access_keys["Wallet Admin"][0];
 
-      // TESTING AUTH
-      const newWallet = "waka_T6xytEWyvIhImThC4dZj4GXl";
+      // TEMPORARY - PREXISTING WALLET - MAKING TOO MANY WALLETS
+      const wallet = {
+        id: "wal_RCA20Sb9LkNIgM",
+        masterKey: "waka_T6xytEWyvIhImThC4dZj4GXl",
+        recieveKey: "waki_NX5nZ3QjfAh67qoOztOz5i",
+        readKey: "wakr_73y7IR2TuS7Z8cNFQWTKUrNq",
+        lnUrlWithdrawKey: "waklw_xA8BOJ3mhVc0i0dITc5aDgoZ",
+        lnUrlPayKey: "waklp_lT4w80fidOhzSKcv3dNQn8h",
+      };
 
-      return newWallet;
+      return wallet;
     } catch (error: any) {
       console.error(error);
     }
   };
 
   generateInvoice = async () => {
-    const tempKey = "waka_OWuCnc5qfAPc9uJ1W215qTL";
+    const RECIEVE_KEY = "waki_NX5nZ3QjfAh67qoOztOz5i";
+    console.log("CALLED");
     try {
       const client = LNPay({
         secretKey: "sak_g0jIDuMNqq9XsOufjY8D3IyV4ERssDwS",
-        walletAccessKey: tempKey,
+        walletAccessKey: RECIEVE_KEY,
       });
 
       const invoice = await client.generateInvoice({

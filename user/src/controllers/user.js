@@ -15,8 +15,8 @@ mongoose.connect(process.env.USER_DBHOST, {
 exports.addUser = asyncHandler(async (req, res) => {
   const newUser = new User(req.body);
 
-  const { data } = await installWallet(req.body.username);
-  newUser.walletId = data.wallet_id;
+  const result = await installWallet(req.body.username);
+  newUser.wallet = result.data.wallet;
 
   const salt = await bcrypt.genSalt(10);
   newUser.password = await bcrypt.hash(newUser.password, salt);

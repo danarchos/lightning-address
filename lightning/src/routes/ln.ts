@@ -9,7 +9,7 @@ const { events, trigger } = require("../controllers/events");
 
 const router = express.Router();
 
-router.route("/generateInvoice").get(generateInvoice);
+router.route("/invoice").get(generateInvoice);
 router.route("/getWallet").get(getWallet);
 router.route("/createWallet").post(createWallet);
 router.route("/trigger").post(trigger);

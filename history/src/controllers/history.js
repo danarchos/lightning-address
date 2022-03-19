@@ -36,15 +36,6 @@ exports.likeInfo = async (req, res) => {
     hasUserLiked = await Like.findOne({ userId, videoId, like: true });
     hasUserDisliked = await Like.findOne({ userId, videoId, like: false });
 
-    console.log({
-      videoId,
-      userId,
-      numLikes,
-      numDislikes,
-      hasUserLiked,
-      hasUserDisliked,
-    });
-
     res.status(200).json({
       success: true,
       videoId,

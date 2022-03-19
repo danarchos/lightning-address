@@ -7,6 +7,7 @@ const installWallet = async (username) => {
       `${process.env.LN_API_BASE}/api/createWallet`,
       { username }
     );
+    console.log({ newWallet });
     return newWallet;
   } catch (err) {
     console.log(err);
