@@ -6,6 +6,14 @@ export const LNPayEvents = {
   invoicePaid: "invoice-paid",
 };
 
+interface TipPassThruProps {
+  destinationWalletId: string;
+  tipperUserId: string;
+  recieverUserId: string;
+  videoId: string;
+  videoTime: string;
+}
+
 class LNPayService extends EventEmitter {
   createWallet = async (username: string) => {
     try {
@@ -34,26 +42,41 @@ class LNPayService extends EventEmitter {
     }
   };
 
-  generateInvoice = async () => {
-    const RECIEVE_KEY = "waki_NX5nZ3QjfAh67qoOztOz5i";
+  generateTipInvoice = async (amount: number, passThru: TipPassThruProps) => {
     try {
       const client = LNPay({
-        secretKey: "sak_g0jIDuMNqq9XsOufjY8D3IyV4ERssDwS",
-        walletAccessKey: RECIEVE_KEY,
+        secretKey: process.env.LNPAY_SECRET ?? "",
+        walletAccessKey: process.env.MASTER_KEY ?? "",
       });
 
       const invoice = await client.generateInvoice({
-        num_satoshis: 10,
-        passThru: {
-          // This id needs to be uniquely set by the client or in app.ws(/events)
-          // in order to get back from payment recieved event to know which websocket connection to notify
-          sessionId: "dasbnnqwd23din",
-        },
+        num_satoshis: amount,
         memo: "This is a memo",
         expiry: 86400,
+        passThru: { ...passThru },
       });
 
       return invoice;
+    } catch (error: any) {
+      console.error(error);
+    }
+  };
+
+  forwardPayment = async (amount: number, destinationWalletId: string) => {
+    try {
+      const client = LNPay({
+        secretKey: process.env.LNPAY_SECRET ?? "",
+        walletAccessKey: process.env.MASTER_KEY ?? "",
+      });
+      const transfer = client.transfer({
+        dest_wallet_id: destinationWalletId,
+        memo: "Transfer Memo",
+        num_satoshis: amount,
+        lnPayParams: {
+          order_id: "100",
+        },
+      });
+      console.log("Transfered", transfer);
     } catch (error: any) {
       console.error(error);
     }
@@ -63,7 +86,7 @@ class LNPayService extends EventEmitter {
     const tempKey = "waka_OWuCnc5qfAPc9uJ1W215qTL";
     try {
       const client = LNPay({
-        secretKey: "sak_g0jIDuMNqq9XsOufjY8D3IyV4ERssDwS",
+        secretKey: process.env.LNPAY_SECRET ?? "",
         walletAccessKey: tempKey,
       });
       const balance = await client.getBalance();

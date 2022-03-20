@@ -10,7 +10,7 @@ mongoose.connect(process.env.VIDEO_DBHOST, {
 
 // Save Video
 exports.save = async (req, res) => {
-  const { username, userId, recieveKey } = req.decoded;
+  const { username, userId, recieveKey, walletId } = req.decoded;
   const { url, title } = req.body;
 
   try {
@@ -18,6 +18,7 @@ exports.save = async (req, res) => {
       username,
       userId,
       recieveKey,
+      walletId,
       url,
       title,
     });
