@@ -5,14 +5,14 @@ const {
   generateInvoice,
 } = require("../controllers/ln");
 
-const { events, trigger } = require("../controllers/events");
+const { events, recieveCallback } = require("../controllers/events");
 
 const router = express.Router();
 
 router.route("/invoice").get(generateInvoice);
 router.route("/getWallet").get(getWallet);
 router.route("/createWallet").post(createWallet);
-router.route("/trigger").post(trigger);
+router.route("/wallet-recieve").post(recieveCallback);
 router.ws("/events", events);
 
 module.exports = router;

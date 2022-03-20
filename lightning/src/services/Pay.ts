@@ -36,7 +36,6 @@ class LNPayService extends EventEmitter {
 
   generateInvoice = async () => {
     const RECIEVE_KEY = "waki_NX5nZ3QjfAh67qoOztOz5i";
-    console.log("CALLED");
     try {
       const client = LNPay({
         secretKey: "sak_g0jIDuMNqq9XsOufjY8D3IyV4ERssDwS",
@@ -44,7 +43,7 @@ class LNPayService extends EventEmitter {
       });
 
       const invoice = await client.generateInvoice({
-        num_satoshis: 100,
+        num_satoshis: 10,
         passThru: {
           // This id needs to be uniquely set by the client or in app.ws(/events)
           // in order to get back from payment recieved event to know which websocket connection to notify
@@ -72,14 +71,6 @@ class LNPayService extends EventEmitter {
     } catch (error: any) {
       console.error(error);
     }
-  };
-
-  // Needs to change name, but is the method that is passed to the webhook
-  trigger = async () => {
-    let videoId = "1234";
-    this.emit(LNPayEvents.invoicePaid, {
-      videoId,
-    });
   };
 }
 

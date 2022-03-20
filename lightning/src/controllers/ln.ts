@@ -1,4 +1,4 @@
-import LNPayService from "../LNPayService";
+import LNPayService from "../services/Pay";
 
 export const SocketEvents = {
   invoiceUpdated: "invoice-updated",
