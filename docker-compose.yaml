@@ -117,6 +117,7 @@ services:
       - PORT=80
       - HISTORY_DBHOST=mongodb://vaus-history-db:27017
       - HISTORY_DBNAME=vaus-history-db
+      - AUTH_API_BASE=http://vaus-auth:80
       - RABBIT=amqp://guest:guest@rabbit:5672
 
     restart: "no"

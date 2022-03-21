@@ -64,7 +64,7 @@ exports.videoById = async (req, res) => {
     const {
       data: { numLikes, numDislikes, hasUserDisliked, hasUserLiked },
     } = await axios.get(
-      `${process.env.HISTORY_API_BASE}/like-info?videoId=${id}&userId=${userId}`
+      `${process.env.HISTORY_API_BASE}/stats?videoId=${id}&userId=${userId}`
     );
 
     res.status(200).json({
@@ -78,11 +78,12 @@ exports.videoById = async (req, res) => {
         walletId: result.walletId,
         recieveKey: result.recieveKey,
       },
-      likes: {
+      stats: {
         numLikes,
         numDislikes,
         hasUserDisliked,
         hasUserLiked,
+        comments,
       },
     });
   } catch (err) {
@@ -109,7 +110,6 @@ exports.like = async (req, res) => {
 };
 
 exports.dislike = async (req, res) => {
-  console.log("called");
   const { videoId, userId } = req.body;
   try {
     const newDislike = await axios.post(

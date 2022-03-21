@@ -1,4 +1,6 @@
 const mongoose = require("mongoose");
+const Comment = require("../models/Comment");
+const CommentUpvote = require("../models/CommentUpvote");
 const Like = require("../models/Like");
 
 mongoose.connect(process.env.HISTORY_DBHOST, {
@@ -27,14 +29,41 @@ exports.addLike = async (req, res) => {
   }
 };
 
-exports.likeInfo = async (req, res) => {
+exports.getStats = async (req, res) => {
   const { videoId, userId } = req.query;
 
   try {
-    numLikes = await Like.count({ like: true });
-    numDislikes = await Like.count({ like: false });
-    hasUserLiked = await Like.findOne({ userId, videoId, like: true });
-    hasUserDisliked = await Like.findOne({ userId, videoId, like: false });
+    const numLikes = await Like.count({ like: true });
+    const numDislikes = await Like.count({ like: false });
+    const hasUserLiked = await Like.findOne({ userId, videoId, like: true });
+    const hasUserDisliked = await Like.findOne({
+      userId,
+      videoId,
+      like: false,
+    });
+
+    // Comments and whether the user has upvoted them.
+    const commentsData = await Comment.find({ videoId });
+    const allCommentIds = commentsData.map((comment) => comment.id);
+    const allUpvotedComments = await CommentUpvote.find({
+      commentId: { $in: allCommentIds },
+      userId: "43563",
+    });
+    const allUpvotedCommentsIds = allUpvotedComments.map(
+      (comment) => comment.commentId
+    );
+    const commentsWithHasUpvoted = commentsData.map((comment) => {
+      return {
+        id: comment.id,
+        videoId: comment.videoId,
+        userId: comment.userId,
+        text: comment.text,
+        upvotes: comment.upvotes,
+        hasUserUpvoted: allUpvotedCommentsIds.includes(comment.id)
+          ? true
+          : false,
+      };
+    });
 
     res.status(200).json({
       success: true,
@@ -44,9 +73,52 @@ exports.likeInfo = async (req, res) => {
       numDislikes,
       hasUserDisliked,
       hasUserLiked,
+      comments: commentsWithHasUpvoted,
     });
   } catch (err) {
-    console.log("Failed to get like info");
+    console.log("Failed to get stats");
+    res.status(500).json({ success: false });
+  }
+};
+
+exports.addComment = async (req, res) => {
+  const { videoId, userId, text } = req.body;
+
+  try {
+    await Comment.create({
+      videoId,
+      userId,
+      text,
+      upvotes: 0,
+    });
+    res.status(200).json({ success: true, text, videoId, userId });
+  } catch (err) {
+    console.log("Failed to add comment", err);
+    res.status(500).json({ success: false });
+  }
+};
+
+exports.addCommentUpvote = async (req, res) => {
+  const { videoId, commenterUserId, userId, commentId } = req.body;
+
+  try {
+    await CommentUpvote.create({
+      videoId,
+      userId,
+      commenterUserId,
+      commentId,
+    });
+
+    await Comment.findOneAndUpdate(
+      { _id: commentId },
+      { $inc: { upvotes: 1 } }
+    );
+
+    res
+      .status(200)
+      .json({ success: true, videoId, userId, commenterUserId, commentId });
+  } catch (err) {
+    console.log("Failed to add comment", err);
     res.status(500).json({ success: false });
   }
 };
