@@ -62,7 +62,7 @@ exports.videoById = async (req, res) => {
     const result = await Video.findById(id);
 
     const {
-      data: { numLikes, numDislikes, hasUserDisliked, hasUserLiked },
+      data: { numLikes, numDislikes, hasUserDisliked, hasUserLiked, comments },
     } = await axios.get(
       `${process.env.HISTORY_API_BASE}/stats?videoId=${id}&userId=${userId}`
     );
@@ -118,6 +118,27 @@ exports.dislike = async (req, res) => {
     );
 
     res.status(200).json({ ...newDislike.data });
+  } catch (err) {
+    console.log({ err });
+    res.status(500).json({ success: false });
+  }
+};
+
+exports.comment = async (req, res) => {
+  const { comment, videoId, userId } = req.body;
+
+  console.log({ comment, videoId, userId });
+  try {
+    const { data } = await axios.post(
+      `${process.env.HISTORY_API_BASE}/comment`,
+      {
+        comment,
+        videoId,
+        userId,
+      }
+    );
+
+    res.status(200).json({ success: true, ...data });
   } catch (err) {
     console.log({ err });
     res.status(500).json({ success: false });

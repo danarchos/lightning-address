@@ -47,7 +47,7 @@ exports.getStats = async (req, res) => {
     const allCommentIds = commentsData.map((comment) => comment.id);
     const allUpvotedComments = await CommentUpvote.find({
       commentId: { $in: allCommentIds },
-      userId: "43563",
+      userId,
     });
     const allUpvotedCommentsIds = allUpvotedComments.map(
       (comment) => comment.commentId
@@ -57,7 +57,7 @@ exports.getStats = async (req, res) => {
         id: comment.id,
         videoId: comment.videoId,
         userId: comment.userId,
-        text: comment.text,
+        text: comment.comment,
         upvotes: comment.upvotes,
         hasUserUpvoted: allUpvotedCommentsIds.includes(comment.id)
           ? true
@@ -82,16 +82,18 @@ exports.getStats = async (req, res) => {
 };
 
 exports.addComment = async (req, res) => {
-  const { videoId, userId, text } = req.body;
-
+  const { videoId, userId, comment } = req.body;
   try {
     await Comment.create({
       videoId,
       userId,
-      text,
+      comment,
       upvotes: 0,
     });
-    res.status(200).json({ success: true, text, videoId, userId });
+
+    res
+      .status(200)
+      .json({ success: true, videoId, userId, comment, upvotes: 0 });
   } catch (err) {
     console.log("Failed to add comment", err);
     res.status(500).json({ success: false });
