@@ -65,6 +65,10 @@ exports.getStats = async (req, res) => {
       };
     });
 
+    const commentsWithSortOrder = commentsWithHasUpvoted.sort(
+      (a, b) => b.upvotes - a.upvotes
+    );
+
     res.status(200).json({
       success: true,
       videoId,
@@ -73,7 +77,7 @@ exports.getStats = async (req, res) => {
       numDislikes,
       hasUserDisliked,
       hasUserLiked,
-      comments: commentsWithHasUpvoted,
+      comments: commentsWithSortOrder,
     });
   } catch (err) {
     console.log("Failed to get stats");
@@ -84,7 +88,7 @@ exports.getStats = async (req, res) => {
 exports.addComment = async (req, res) => {
   const { videoId, userId, comment } = req.body;
   try {
-    await Comment.create({
+    const newComment = await Comment.create({
       videoId,
       userId,
       comment,
@@ -93,7 +97,7 @@ exports.addComment = async (req, res) => {
 
     res
       .status(200)
-      .json({ success: true, videoId, userId, comment, upvotes: 0 });
+      .json({ success: true, comment, videoId, userId, id: newComment._id });
   } catch (err) {
     console.log("Failed to add comment", err);
     res.status(500).json({ success: false });
@@ -101,13 +105,12 @@ exports.addComment = async (req, res) => {
 };
 
 exports.addCommentUpvote = async (req, res) => {
-  const { videoId, commenterUserId, userId, commentId } = req.body;
+  const { videoId, userId, commentId } = req.body;
 
   try {
     await CommentUpvote.create({
       videoId,
       userId,
-      commenterUserId,
       commentId,
     });
 
@@ -116,11 +119,9 @@ exports.addCommentUpvote = async (req, res) => {
       { $inc: { upvotes: 1 } }
     );
 
-    res
-      .status(200)
-      .json({ success: true, videoId, userId, commenterUserId, commentId });
+    res.status(200).json({ success: true, videoId, userId, commentId });
   } catch (err) {
-    console.log("Failed to add comment", err);
+    console.log("Failed to add upvote", err);
     res.status(500).json({ success: false });
   }
 };

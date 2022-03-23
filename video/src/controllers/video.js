@@ -127,12 +127,30 @@ exports.dislike = async (req, res) => {
 exports.comment = async (req, res) => {
   const { comment, videoId, userId } = req.body;
 
-  console.log({ comment, videoId, userId });
   try {
     const { data } = await axios.post(
       `${process.env.HISTORY_API_BASE}/comment`,
       {
         comment,
+        videoId,
+        userId,
+      }
+    );
+
+    res.status(200).json({ success: true, ...data });
+  } catch (err) {
+    console.log({ err });
+    res.status(500).json({ success: false });
+  }
+};
+
+exports.upvoteComment = async (req, res) => {
+  const { commentId, videoId, userId } = req.body;
+  try {
+    const { data } = await axios.post(
+      `${process.env.HISTORY_API_BASE}/comment-upvote`,
+      {
+        commentId,
         videoId,
         userId,
       }

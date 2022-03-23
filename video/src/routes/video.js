@@ -8,6 +8,7 @@ const {
   videoById,
   like,
   dislike,
+  upvoteComment,
   comment,
 } = require("../controllers/video");
 
@@ -20,5 +21,6 @@ router.route("/view").post(view);
 router.route("/like").post(protect, like);
 router.route("/dislike").post(protect, dislike);
 router.route("/comment").post(protect, comment);
+router.route("/comment-upvote").post(protect, upvoteComment);
 
 module.exports = router;
