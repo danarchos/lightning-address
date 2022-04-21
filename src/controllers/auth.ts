@@ -1,32 +1,30 @@
-const asyncHandler = require("../middlewares/asyncHandlerFn");
-const axios = require("axios");
-const bcrypt = require("bcryptjs");
-const mongoose = require("mongoose");
-const crypto = require('crypto');
-const jwt = require("jsonwebtoken");
-const sgMail = require('@sendgrid/mail')
+import { asyncHandler } from "../middlewares/asyncHandlerFn";
+import bcrypt from "bcryptjs";
+import mongoose from "mongoose";
+import crypto from 'crypto';
+import jwt from "jsonwebtoken";
+import sgMail from "@sendgrid/mail";
 
 
 const JWT_EXPIRE = process.env.JWT_EXPIRE;
 const JWT_SECRET = process.env.JWT_SECRET;
 
-const { installWallet } = require("../utils/wallets");
+import { installWallet } from "../utils/wallets"
 
-const User = require("../models/User");
-const ResetCode = require("../models/ResetCode");
+import { User } from "../models/User"
+import { ResetCode } from "../models/ResetCode";
 
-mongoose.connect(process.env.USER_DBHOST, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-});
+// mongoose.connect(process.env.USER_DBHOST, {
+//     useNewUrlParser: true,
+//     useUnifiedTopology: true,
+// });
 
 // SIGN UP - Creates user model, adds salt to password, creates a JWT
-exports.signup = asyncHandler(async (req, res) => {
+export const signup = asyncHandler(async (req: any, res: any) => {
     try {
         const newUser = new User(req.body);
 
         const result = await installWallet(req.body.username)
-        newUser.wallet = result.data.wallet;
 
         const salt = await bcrypt.genSalt(10);
         newUser.password = await bcrypt.hash(newUser.password, salt);
@@ -40,6 +38,10 @@ exports.signup = asyncHandler(async (req, res) => {
             recieveKey: user.wallet.recieveKey,
         };
 
+        if (!JWT_SECRET) {
+            res.status(500).json({ success: false, message: "Server Error" });
+            return
+        }
 
         const token = jwt.sign(payload, JWT_SECRET, {
             expiresIn: JWT_EXPIRE,
@@ -52,7 +54,7 @@ exports.signup = asyncHandler(async (req, res) => {
 });
 
 // LOGIN
-exports.login = async (req, res) => {
+export const login = async (req: any, res: any) => {
     const { password, email } = req.body;
 
     try {
@@ -73,6 +75,11 @@ exports.login = async (req, res) => {
             recieveKey: user.wallet.recieveKey,
         };
 
+        if (!JWT_SECRET) {
+            res.status(500).json({ success: false, message: "Server Error" });
+            return
+        }
+
         const token = jwt.sign(payload, JWT_SECRET, {
             expiresIn: JWT_EXPIRE,
         });
@@ -86,7 +93,7 @@ exports.login = async (req, res) => {
     }
 };
 
-exports.initiateResetPassword = async (req, res) => {
+export const initiateResetPassword = async (req: any, res: any) => {
     const { email } = req.body
     // Check email exists in db
     const foundUser = await User.findOne({ email });
@@ -107,7 +114,7 @@ exports.initiateResetPassword = async (req, res) => {
     await newCode.save();
 
     // Send the code to the email adddress
-    sgMail.setApiKey(process.env.SENDGRID_API_KEY)
+    sgMail.setApiKey(process.env.SENDGRID_API_KEY ?? "")
     const msg = {
         to: 'dr.mcgrane@gmail.com', // Change to your recipient
         from: 'dr.mcgrane@gmail.com', // Change to your verified sender
@@ -119,13 +126,13 @@ exports.initiateResetPassword = async (req, res) => {
         .then(() => {
             console.log('Email sent')
         })
-        .catch((error) => {
+        .catch((error: any) => {
             console.error(error)
         })
 
 }
 
-exports.authenticateResetCode = async (req, res) => {
+export const authenticateResetCode = async (req: any, res: any) => {
     const { code, email } = req.body
 
     const foundCode = await ResetCode.findOne({ email, code });
@@ -139,7 +146,7 @@ exports.authenticateResetCode = async (req, res) => {
 
 }
 
-exports.resetNewPassword = async (req, res) => {
+export const resetNewPassword = async (req: any, res: any) => {
     const { code, email, newPassword } = req.body
 
     const foundCode = await ResetCode.findOne({ email, code });
@@ -160,9 +167,9 @@ exports.resetNewPassword = async (req, res) => {
     res.status(200).json({ success: true, message: "Password Updated" });
 }
 
-exports.veryifyDecodeUser = async (req, res) => {
+export const veryifyDecodeUser = async (req: any, res: any) => {
     try {
-        const decoded = await jwt.verify(req.query.token, process.env.JWT_SECRET);
+        const decoded = await jwt.verify(req.query.token, process.env.JWT_SECRET ?? "");
         console.log({ decoded });
         res.status(200).json({
             success: true,

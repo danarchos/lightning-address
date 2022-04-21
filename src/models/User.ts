@@ -1,5 +1,5 @@
-const mongoose = require("mongoose");
-const bcrypt = require("bcryptjs");
+import mongoose from "mongoose"
+import bcrypt from "bcryptjs"
 
 const Schema = mongoose.Schema;
 
@@ -19,13 +19,12 @@ const UserSchema = new Schema({
 
 // A method that enables the comparison of password that have been salted
 // https://www.mongodb.com/blog/post/password-authentication-with-mongoose-part-1
-UserSchema.methods.comparePassword = function (candidatePassword, cb) {
+UserSchema.methods.comparePassword = function (candidatePassword: any, cb: any) {
   bcrypt.compare(candidatePassword, this.password, function (err, isMatch) {
     if (err) return cb(err);
     cb(null, isMatch);
   });
 };
 
-const User = mongoose.model("User", UserSchema);
+export const User = mongoose.model("User", UserSchema);
 
-module.exports = User;

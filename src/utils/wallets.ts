@@ -1,7 +1,7 @@
-const axios = require("axios");
+import axios from "axios"
 
 // Install user
-const installWallet = async (username) => {
+export const installWallet = async (username: string) => {
   try {
     const newWallet = await axios.post(
       `${process.env.LN_API_BASE}/api/createWallet`,
@@ -14,4 +14,4 @@ const installWallet = async (username) => {
   }
 };
 
-exports.installWallet = installWallet;
+

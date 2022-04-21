@@ -1,7 +1,6 @@
-const axios = require("axios");
 const jwt = require("jsonwebtoken")
 
-exports.protect = async (req, res, next) => {
+export const protect = async (req: any, res: any, next: any) => {
     if (!req.headers.authorization) {
         return next({
             message: "You need to be logged in to visit this route",

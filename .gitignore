@@ -1,8 +1,8 @@
 .DS_Store 
 .env
 
-auth/node_modules
-auth/yarn.lock
+node_modules
+yarn.lock
 
 user/node_modules
 user/yarn.lock

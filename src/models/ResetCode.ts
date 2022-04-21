@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose"
 
 const Schema = mongoose.Schema;
 
@@ -8,6 +8,4 @@ const ResetCodeSchema = new Schema({
 });
 
 
-const ResetCode = mongoose.model("ResetCode", ResetCodeSchema);
-
-module.exports = ResetCode;
+export const ResetCode = mongoose.model("ResetCode", ResetCodeSchema);

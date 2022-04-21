@@ -1,13 +1,9 @@
 import express from "express";
 import expressWs from "express-ws";
+import { lnRouter } from './routes/ln';
+import { userRouter } from './routes/user'
+import cors from "cors"
 
-const cors = require("cors");
-
-export const SocketEvents = {
-  invoiceUpdated: "invoice-updated",
-  invoicePaid: "invoice-paid",
-  bountyCreated: "bounty-created",
-};
 
 const PORT = process.env.PORT || 5000;
 const { app } = expressWs(express());
@@ -15,8 +11,8 @@ const { app } = expressWs(express());
 app.use(express.json());
 app.use(cors());
 
-const lnRoutes = require("./routes/ln");
-app.use("/api", lnRoutes);
+app.use("/api", lnRouter);
+app.use("/api", userRouter);
 
 app.listen(PORT, () => {
   console.log("LIGHTNING SERVICE RUNNING");
