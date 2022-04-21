@@ -1,30 +1,23 @@
 import { asyncHandler } from "../middlewares/asyncHandlerFn";
 import bcrypt from "bcryptjs";
-import mongoose from "mongoose";
 import crypto from 'crypto';
 import jwt from "jsonwebtoken";
 import sgMail from "@sendgrid/mail";
-
+import LNPay from "../services/Pay"
 
 const JWT_EXPIRE = process.env.JWT_EXPIRE;
 const JWT_SECRET = process.env.JWT_SECRET;
 
-import { installWallet } from "../utils/wallets"
-
 import { User } from "../models/User"
 import { ResetCode } from "../models/ResetCode";
-
-// mongoose.connect(process.env.USER_DBHOST, {
-//     useNewUrlParser: true,
-//     useUnifiedTopology: true,
-// });
 
 // SIGN UP - Creates user model, adds salt to password, creates a JWT
 export const signup = asyncHandler(async (req: any, res: any) => {
     try {
         const newUser = new User(req.body);
 
-        // const result = await installWallet(req.body.username)
+        const result = await LNPay.createWallet(req.body.username);
+        newUser.wallet = { ...result }
 
         const salt = await bcrypt.genSalt(10);
         newUser.password = await bcrypt.hash(newUser.password, salt);
@@ -34,8 +27,8 @@ export const signup = asyncHandler(async (req: any, res: any) => {
         const payload = {
             userId: user._id,
             username: user.username,
-            // walletId: user.wallet.id,
-            // recieveKey: user.wallet.recieveKey,
+            walletId: user.wallet.id,
+            recieveKey: user.wallet.recieveKey,
         };
 
         if (!JWT_SECRET) {

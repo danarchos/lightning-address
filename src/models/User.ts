@@ -7,14 +7,14 @@ const UserSchema = new Schema({
   username: { type: String, required: true, unique: true },
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
-  // wallet: {
-  //   id: { type: String, required: true },
-  //   masterKey: { type: String, required: true },
-  //   recieveKey: { type: String, required: true },
-  //   readKey: { type: String, required: true },
-  //   lnUrlWithdrawKey: { type: String, required: true },
-  //   lnUrlPayKey: { type: String, required: true },
-  // },
+  wallet: {
+    id: { type: String, required: true },
+    masterKey: { type: String, required: true },
+    recieveKey: { type: String, required: true },
+    readKey: { type: String, required: true },
+    lnUrlWithdrawKey: { type: String, required: true },
+    lnUrlPayKey: { type: String, required: true },
+  },
 });
 
 // A method that enables the comparison of password that have been salted
