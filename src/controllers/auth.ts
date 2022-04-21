@@ -24,7 +24,7 @@ export const signup = asyncHandler(async (req: any, res: any) => {
     try {
         const newUser = new User(req.body);
 
-        const result = await installWallet(req.body.username)
+        // const result = await installWallet(req.body.username)
 
         const salt = await bcrypt.genSalt(10);
         newUser.password = await bcrypt.hash(newUser.password, salt);
@@ -34,8 +34,8 @@ export const signup = asyncHandler(async (req: any, res: any) => {
         const payload = {
             userId: user._id,
             username: user.username,
-            walletId: user.wallet.id,
-            recieveKey: user.wallet.recieveKey,
+            // walletId: user.wallet.id,
+            // recieveKey: user.wallet.recieveKey,
         };
 
         if (!JWT_SECRET) {

@@ -3,12 +3,6 @@ import mongoose from "mongoose"
 
 import { User } from "../models/User"
 
-
-// mongoose.connect(process.env.USER_DBHOST, {
-//     useNewUrlParser: true,
-//     useUnifiedTopology: true,
-// });
-
 // GET user
 export const user = asyncHandler(async (req: any, res: any) => {
     const { email } = req.query;
