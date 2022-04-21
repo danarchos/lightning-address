@@ -1,32 +1,11 @@
 const asyncHandler = require("../middlewares/asyncHandlerFn");
 const mongoose = require("mongoose");
-const bcrypt = require("bcryptjs");
-
-const { installWallet } = require("../utils/wallets");
 
 const User = require("../models/User");
 
 mongoose.connect(process.env.USER_DBHOST, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
-});
-
-// Adds a user to USER DB
-exports.addUser = asyncHandler(async (req, res) => {
-  const newUser = new User(req.body);
-
-  const result = await installWallet(req.body.username);
-  newUser.wallet = result.data.wallet;
-
-  const salt = await bcrypt.genSalt(10);
-  newUser.password = await bcrypt.hash(newUser.password, salt);
-  const user = await newUser.save();
-
-  if (user) {
-    res.status(200).json({ success: true, user });
-    return;
-  }
-  res.status(500).json({ success: false });
 });
 
 // GET user
@@ -42,3 +21,35 @@ exports.user = asyncHandler(async (req, res) => {
   }
   res.status(200).json({ success: true, user });
 });
+
+// Update username
+exports.changeUsername = asyncHandler(async (req, res) => {
+  const { newUsername } = req.body
+  try {
+    await User.findOneAndUpdate({ id: req.decoded.id }, { username: newUsername })
+    res.status(200).json({ success: true, message: "Successfully updated username" });
+  } catch (err) {
+    res.status(500).json({ success: false, message: "Failed to change username" });
+  }
+});
+
+
+// Update email
+exports.changeEmail = asyncHandler(async (req, res) => {
+  const { newEmail } = req.body
+  if (!req.decoded.userId) {
+    res.status(404).json({ success: false, message: "Failed to change email" });
+    return
+  }
+
+
+  try {
+    await User.findOneAndUpdate({ id: req.decoded.userId }, { email: newEmail })
+    res.status(200).json({ success: true, message: "Successfully updated email" });
+  } catch (err) {
+    res.status(500).json({ success: false, message: "Failed to change email" });
+  }
+});
+
+
+

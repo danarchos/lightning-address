@@ -6,14 +6,6 @@ export const LNPayEvents = {
   invoicePaid: "invoice-paid",
 };
 
-interface TipPassThruProps {
-  destinationWalletId: string;
-  tipperUserId: string;
-  recieverUserId: string;
-  videoId: string;
-  videoTime: string;
-}
-
 class LNPayService extends EventEmitter {
   createWallet = async (username: string) => {
     try {
@@ -42,45 +34,6 @@ class LNPayService extends EventEmitter {
     }
   };
 
-  generateTipInvoice = async (amount: number, passThru: TipPassThruProps) => {
-    try {
-      const client = LNPay({
-        secretKey: process.env.LNPAY_SECRET ?? "",
-        walletAccessKey: process.env.MASTER_KEY ?? "",
-      });
-
-      const invoice = await client.generateInvoice({
-        num_satoshis: amount,
-        memo: "This is a memo",
-        expiry: 86400,
-        passThru: { ...passThru },
-      });
-
-      return invoice;
-    } catch (error: any) {
-      console.error(error);
-    }
-  };
-
-  forwardPayment = async (amount: number, destinationWalletId: string) => {
-    try {
-      const client = LNPay({
-        secretKey: process.env.LNPAY_SECRET ?? "",
-        walletAccessKey: process.env.MASTER_KEY ?? "",
-      });
-      const transfer = client.transfer({
-        dest_wallet_id: destinationWalletId,
-        memo: "Transfer Memo",
-        num_satoshis: amount,
-        lnPayParams: {
-          order_id: "100",
-        },
-      });
-      console.log("Transfered", transfer);
-    } catch (error: any) {
-      console.error(error);
-    }
-  };
 
   getWallet = async () => {
     const tempKey = "waka_OWuCnc5qfAPc9uJ1W215qTL";

@@ -1,142 +1,43 @@
 version: "3"
 services:
-  # Auth microservice - - - - - - - -
-  vaus-auth:
-    image: vaus-auth
-    build:
-      context: ./auth
-      dockerfile: Dockerfile-dev
-    env_file:
-      - ./auth/.env
-
-    volumes:
-      - /tmp/auth/npm-cache:/root/.npm:z
-      - ./auth/src:/usr/src/app/src:z
-
-    container_name: vaus-auth
-    ports:
-      - "4000:80"
-    environment:
-      - PORT=80
-      - USER_API_BASE=http://vaus-user:80
-
-    restart: "no"
-
   # User microservice db - - - - - - - -
-  vaus-user-db:
+  juna-user-db:
     image: mongo:latest
-    container_name: vaus-user-db
+    container_name: juna-user-db
     ports:
-      - "4001:27017"
+      - "4000:27017"
     restart: always
 
   # User microservice - - - - - - - -
-  vaus-user:
-    image: vaus-user
+  juna-user:
+    image: juna-user
     build:
       context: ./user
       dockerfile: Dockerfile-dev
+    env_file:
+      - ./user/.env
 
     volumes:
       - /tmp/user/npm-cache:/root/.npm:z
       - ./user/src:/usr/src/app/src:z
 
-    container_name: vaus-user
+    container_name: juna-user
     ports:
-      - "4002:80"
+      - "4001:80"
     environment:
       - PORT=80
-      - USER_DBHOST=mongodb://vaus-user-db:27017
-      - USER_DBNAME=vaus-user-db
-      - LN_API_BASE=http://vaus-lightning:80
+      - USER_DBHOST=mongodb://juna-user-db:27017
+      - USER_DBNAME=juna-user-db
+      - LN_API_BASE=http://juna-lightning:80
 
     depends_on:
-      - vaus-user-db
+      - juna-user-db
 
     restart: "no"
-
-  # Video microservice database - - - - - - - -
-  vaus-video-db:
-    image: mongo:latest
-    container_name: vaus-video-db
-    ports:
-      - "4003:27017"
-    restart: always
-
-  # Video microservice - - - - - - - -
-  vaus-video:
-    image: vaus-video
-    build:
-      context: ./video
-      dockerfile: Dockerfile-dev
-
-    volumes:
-      - /tmp/video/npm-cache:/root/.npm:z
-      - ./video/src:/usr/src/app/src:z
-
-    container_name: vaus-video
-    ports:
-      - "4004:80"
-    environment:
-      - PORT=80
-      - VIDEO_DBHOST=mongodb://vaus-video-db:27017
-      - VIDEO_DBNAME=vaus-video-db
-      - AUTH_API_BASE=http://vaus-auth:80
-      - HISTORY_API_BASE=http://vaus-history:80/api
-      - RABBIT=amqp://guest:guest@rabbit:5672
-
-    depends_on:
-      - vaus-video-db
-      - rabbit
-
-    restart: "no"
-
-  # History microservice database - - - - - - - -
-  vaus-history-db:
-    image: mongo:latest
-    container_name: vaus-history-db
-    ports:
-      - "4005:27017"
-    restart: always
-
-  # History microservice - - - - - - - -
-  vaus-history:
-    image: vaus-history
-    build:
-      context: ./history
-      dockerfile: Dockerfile-dev
-
-    volumes:
-      - /tmp/history/npm-cache:/root/.npm:z
-      - ./history/src:/usr/src/app/src:z
-
-    container_name: vaus-history
-    ports:
-      - "4006:80"
-    environment:
-      - PORT=80
-      - HISTORY_DBHOST=mongodb://vaus-history-db:27017
-      - HISTORY_DBNAME=vaus-history-db
-      - AUTH_API_BASE=http://vaus-auth:80
-      - RABBIT=amqp://guest:guest@rabbit:5672
-
-    restart: "no"
-
-    depends_on:
-      - vaus-history-db
-      - rabbit
-
-  # Lightning microservice database - - - - - - - -
-  vaus-lightning-db:
-    image: mongo:latest
-    container_name: vaus-lightning-db
-    ports:
-      - "4007:27017"
-    restart: always
 
   # Lightning microservice - - - - - - - -
-  vaus-lightning:
-    image: vaus-lightning
+  juna-lightning:
+    image: juna-lightning
     build:
       context: ./lightning
       dockerfile: Dockerfile-dev
@@ -145,32 +46,12 @@ services:
       - /tmp/lightning/npm-cache:/root/.npm:z
       - ./lightning/src:/usr/src/app/src:z
 
-    container_name: vaus-lightning
+    container_name: juna-lightning
     ports:
-      - "4008:80"
+      - "4002:80"
     environment:
       - PORT=80
-      - LIGHTNING_DBHOST=mongodb://vaus-lightning-db:27017
-      - LIGHTNINGs_DBNAME=vaus-lightning-db
     env_file:
       - ./lightning/.env
 
-    depends_on:
-      - vaus-lightning-db
-
     restart: "no"
-
-  # RabbitMQ - - - - - - - -
-  rabbit:
-    image: rabbitmq:3.8.1-management
-    container_name: rabbit
-
-    ports:
-      - "5672:5672"
-      - "15672:15672"
-
-    expose:
-      - "5672"
-      - "15672"
-
-    restart: "always"
