@@ -1,18 +1,12 @@
-# vaus-microservices
+# juna-services
 
 Built with Docker and Node Express
 
 ### Microservices included
 
-- User
-- Auth
-- Video
-- Video History
-- Bitcoin Lightning
-- Bitcoin Lightning Database (MongoDB)
-- Video Database (MongoDB)
-- User Database (MongoDB)
-- Video History Database (MongoDB)
+- User/Auth
+- User/Auth DB
+- Lightning Integration (LNPAY.co)
 
 Start:
 
