@@ -1,5 +1,4 @@
 import { asyncHandler } from "../middlewares/asyncHandlerFn"
-import mongoose from "mongoose"
 
 import { User } from "../models/User"
 
@@ -36,7 +35,6 @@ export const changeEmail = asyncHandler(async (req: any, res: any) => {
         res.status(404).json({ success: false, message: "Failed to change email" });
         return
     }
-
 
     try {
         await User.findOneAndUpdate({ id: req.decoded.userId }, { email: newEmail })

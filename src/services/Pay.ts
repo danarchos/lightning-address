@@ -48,6 +48,26 @@ class LNPayService extends EventEmitter {
       console.error(error);
     }
   };
+
+  generateInvoice = async (amount: number) => {
+    try {
+      const client = LNPay({
+        secretKey: process.env.LNPAY_SECRET ?? "",
+        walletAccessKey: process.env.MASTER_KEY ?? "",
+      });
+
+      const invoice = await client.generateInvoice({
+        num_satoshis: amount,
+        memo: "This is a memo",
+        expiry: 86400,
+      });
+
+      return invoice;
+    } catch (error: any) {
+      console.error(error);
+    }
+  };
+
 }
 
 export default new LNPayService();
