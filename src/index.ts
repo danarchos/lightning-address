@@ -9,7 +9,7 @@ const { app } = expressWs(express());
 import lnRouter from './routes/ln';
 import { userRouter } from './routes/user'
 
-mongoose.connect("mongodb+srv://danramac:Fitzroy3065@cluster0.obak4.mongodb.net/myFirstDatabase?retryWrites=true&w=majority");
+mongoose.connect(`mongodb+srv://${process.env.MONGODB_USERNAME}:${process.env.MONGODB_PASSWORD}@cluster0.obak4.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`);
 
 const PORT = process.env.PORT || 5000;
 
