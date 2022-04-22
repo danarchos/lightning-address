@@ -20,7 +20,7 @@ const getWallet = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
 });
 exports.getWallet = getWallet;
 const generateInvoice = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { amount, } = req.query;
+    const { amount } = req.query;
     if (!amount)
         return;
     const invoice = yield Pay_1.default.generateInvoice(parseInt(amount));
@@ -28,7 +28,7 @@ const generateInvoice = (req, res) => __awaiter(void 0, void 0, void 0, function
 });
 exports.generateInvoice = generateInvoice;
 const payInvoice = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { payRequest, } = req.body;
+    const { payRequest } = req.body;
     if (!payRequest)
         return;
     const result = yield Pay_1.default.payInvoice(payRequest);

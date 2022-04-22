@@ -7,7 +7,7 @@ const express_1 = __importDefault(require("express"));
 const ln_1 = require("../controllers/ln");
 const events_1 = require("../controllers/events");
 const lnRouter = express_1.default.Router();
-lnRouter.route("/getWallet").get(ln_1.getWallet);
+lnRouter.route("/get-wallet").get(ln_1.getWallet);
 lnRouter.route("/invoice").get(ln_1.generateInvoice);
 lnRouter.route("/pay-invoice").post(ln_1.payInvoice);
 lnRouter.route("/wallet-recieve").post(events_1.receiveCallback);
