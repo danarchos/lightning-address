@@ -4,8 +4,7 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "start": "NODE_PATH=./build node build/index.js",
-    "build": "tsc -p .",
+    "start": "node build/index.js",
     "dev": "nodemon src/index.ts"
   },
   "dependencies": {
