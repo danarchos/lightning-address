@@ -1,10 +1,11 @@
 {
-  "name": "lightningts",
+  "name": "juna",
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "start": "node build/index.js",
+    "start": "NODE_PATH=./build node build/index.js",
+    "build": "tsc -p .",
     "dev": "nodemon src/index.ts"
   },
   "dependencies": {
