@@ -1,0 +1,20 @@
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.userRouter = void 0;
+const express_1 = __importDefault(require("express"));
+const protectedRoute_1 = require("../middlewares/protectedRoute");
+const users_1 = require("../controllers/users");
+const auth_1 = require("../controllers/auth");
+exports.userRouter = express_1.default.Router();
+exports.userRouter.route("/user").get(protectedRoute_1.protect, users_1.user);
+exports.userRouter.route("/initiate-reset-password").post(auth_1.initiateResetPassword);
+exports.userRouter.route("/authenticate-reset-code").post(auth_1.authenticateResetCode);
+exports.userRouter.route("/change-username").post(protectedRoute_1.protect, users_1.changeUsername);
+exports.userRouter.route("/change-email").post(protectedRoute_1.protect, users_1.changeEmail);
+exports.userRouter.route("/reset-password").post(auth_1.resetNewPassword);
+exports.userRouter.route("/signup").post(auth_1.signup);
+exports.userRouter.route("/login").post(auth_1.login);
+// router.route("/verifyDecodeUser").get(veryifyDecodeUser);
