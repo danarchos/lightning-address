@@ -68,6 +68,32 @@ class LNPayService extends EventEmitter {
     }
   };
 
+  payInvoice = async (paymentRequest: string) => {
+    const lnpay = LNPay({
+      secretKey: process.env.LNPAY_SECRET ?? "",
+      walletAccessKey: process.env.MASTER_KEY ?? "",
+    });
+
+
+    try {
+      const payInvoice = await lnpay.payInvoice({
+        payment_request: paymentRequest,
+      });
+
+      return payInvoice
+
+    } catch (err) {
+      console.log({ err })
+    }
+
+
+
+  }
+
+
+
+
+
 }
 
 export default new LNPayService();
