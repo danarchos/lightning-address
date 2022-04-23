@@ -26,25 +26,31 @@ exports.user = (0, asyncHandlerFn_1.asyncHandler)((req, res) => __awaiter(void 0
 }));
 // Update username
 exports.changeUsername = (0, asyncHandlerFn_1.asyncHandler)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { newUsername } = req.body;
+    const { username } = req.body;
     try {
-        yield User_1.User.findOneAndUpdate({ id: req.decoded.id }, { username: newUsername });
-        res.status(200).json({ success: true, message: "Successfully updated username" });
+        yield User_1.User.findOneAndUpdate({ id: req.decoded.id }, { username });
+        res
+            .status(200)
+            .json({ success: true, message: "Successfully updated username" });
     }
     catch (err) {
-        res.status(500).json({ success: false, message: "Failed to change username" });
+        res
+            .status(500)
+            .json({ success: false, message: "Failed to change username" });
     }
 }));
 // Update email
 exports.changeEmail = (0, asyncHandlerFn_1.asyncHandler)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { newEmail } = req.body;
+    const { email } = req.body;
     if (!req.decoded.userId) {
         res.status(404).json({ success: false, message: "Failed to change email" });
         return;
     }
     try {
-        yield User_1.User.findOneAndUpdate({ id: req.decoded.userId }, { email: newEmail });
-        res.status(200).json({ success: true, message: "Successfully updated email" });
+        yield User_1.User.findOneAndUpdate({ id: req.decoded.userId }, { email });
+        res
+            .status(200)
+            .json({ success: true, message: "Successfully updated email" });
     }
     catch (err) {
         res.status(500).json({ success: false, message: "Failed to change email" });
