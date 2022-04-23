@@ -6,6 +6,11 @@ export const getWallet = async (req: Request, res: Response) => {
   res.status(200).json({ success: true, wallet });
 };
 
+export const getTxs = async (req: Request, res: Response) => {
+  const txs = await LNPayService.getTxs();
+  res.status(200).json({ success: true, txs });
+};
+
 export const generateInvoice = async (req: Request, res: Response) => {
   const { amount } = req.query;
   if (!amount) return;

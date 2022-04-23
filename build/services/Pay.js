@@ -61,12 +61,27 @@ class LNPayService extends events_1.EventEmitter {
                 console.error(error);
             }
         });
-        this.generateInvoice = (amount) => __awaiter(this, void 0, void 0, function* () {
-            var _b, _c;
+        this.getTxs = () => __awaiter(this, void 0, void 0, function* () {
+            var _b;
+            const tempKey = "waka_OWuCnc5qfAPc9uJ1W215qTL";
             try {
                 const client = (0, lnpay_1.default)({
                     secretKey: (_b = process.env.LNPAY_SECRET) !== null && _b !== void 0 ? _b : "",
-                    walletAccessKey: (_c = process.env.MASTER_KEY) !== null && _c !== void 0 ? _c : "",
+                    walletAccessKey: tempKey,
+                });
+                const txs = yield client.getTransactions({});
+                return txs;
+            }
+            catch (error) {
+                console.error(error);
+            }
+        });
+        this.generateInvoice = (amount) => __awaiter(this, void 0, void 0, function* () {
+            var _c, _d;
+            try {
+                const client = (0, lnpay_1.default)({
+                    secretKey: (_c = process.env.LNPAY_SECRET) !== null && _c !== void 0 ? _c : "",
+                    walletAccessKey: (_d = process.env.MASTER_KEY) !== null && _d !== void 0 ? _d : "",
                 });
                 const invoice = yield client.generateInvoice({
                     num_satoshis: amount,
@@ -80,10 +95,10 @@ class LNPayService extends events_1.EventEmitter {
             }
         });
         this.payInvoice = (paymentRequest) => __awaiter(this, void 0, void 0, function* () {
-            var _d, _e;
+            var _e, _f;
             const lnpay = (0, lnpay_1.default)({
-                secretKey: (_d = process.env.LNPAY_SECRET) !== null && _d !== void 0 ? _d : "",
-                walletAccessKey: (_e = process.env.MASTER_KEY) !== null && _e !== void 0 ? _e : "",
+                secretKey: (_e = process.env.LNPAY_SECRET) !== null && _e !== void 0 ? _e : "",
+                walletAccessKey: (_f = process.env.MASTER_KEY) !== null && _f !== void 0 ? _f : "",
             });
             try {
                 const payInvoice = yield lnpay.payInvoice({

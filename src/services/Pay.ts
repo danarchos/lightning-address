@@ -34,7 +34,6 @@ class LNPayService extends EventEmitter {
     }
   };
 
-
   getWallet = async () => {
     const tempKey = "waka_OWuCnc5qfAPc9uJ1W215qTL";
     try {
@@ -44,6 +43,20 @@ class LNPayService extends EventEmitter {
       });
       const balance = await client.getBalance();
       return balance;
+    } catch (error: any) {
+      console.error(error);
+    }
+  };
+
+  getTxs = async () => {
+    const tempKey = "waka_OWuCnc5qfAPc9uJ1W215qTL";
+    try {
+      const client = LNPay({
+        secretKey: process.env.LNPAY_SECRET ?? "",
+        walletAccessKey: tempKey,
+      });
+      const txs = await client.getTransactions({});
+      return txs;
     } catch (error: any) {
       console.error(error);
     }
@@ -74,26 +87,16 @@ class LNPayService extends EventEmitter {
       walletAccessKey: process.env.MASTER_KEY ?? "",
     });
 
-
     try {
       const payInvoice = await lnpay.payInvoice({
         payment_request: paymentRequest,
       });
 
-      return payInvoice
-
+      return payInvoice;
     } catch (err) {
-      console.log({ err })
+      console.log({ err });
     }
-
-
-
-  }
-
-
-
-
-
+  };
 }
 
 export default new LNPayService();

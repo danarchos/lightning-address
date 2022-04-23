@@ -12,13 +12,18 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.payInvoice = exports.generateInvoice = exports.getWallet = void 0;
+exports.payInvoice = exports.generateInvoice = exports.getTxs = exports.getWallet = void 0;
 const Pay_1 = __importDefault(require("../services/Pay"));
 const getWallet = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const wallet = yield Pay_1.default.getWallet();
     res.status(200).json({ success: true, wallet });
 });
 exports.getWallet = getWallet;
+const getTxs = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const txs = yield Pay_1.default.getTxs();
+    res.status(200).json({ success: true, txs });
+});
+exports.getTxs = getTxs;
 const generateInvoice = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { amount } = req.query;
     if (!amount)
