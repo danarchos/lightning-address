@@ -21,6 +21,18 @@ export const userInfo = asyncHandler(async (req: any, res: any) => {
   });
 });
 
+export const checkUsername = asyncHandler(async (req: any, res: any) => {
+  const { username } = req.query;
+
+  const foundUser = await User.findOne({ username });
+
+  if (foundUser) {
+    res.status(200).json({ taken: true });
+    return;
+  }
+  res.status(200).json({ taken: false });
+});
+
 // Update username
 export const changeUsername = asyncHandler(async (req: any, res: any) => {
   const { username } = req.body;
