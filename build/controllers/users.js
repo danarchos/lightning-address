@@ -18,12 +18,14 @@ const User_1 = require("../models/User");
 const Pay_1 = __importDefault(require("../services/Pay"));
 // GET user
 exports.userInfo = (0, asyncHandlerFn_1.asyncHandler)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { email } = req.query;
+    const { id } = req.query;
+    if (!id) {
+        res.status(404).json({ success: false, message: "No User id Provided" });
+    }
     let user;
-    if (email)
-        user = yield User_1.User.findOne({ email });
+    user = yield User_1.User.findOne({ id });
     if (!user) {
-        res.status(400).json({ success: false, message: "No email found" });
+        res.status(400).json({ success: false, message: "No user found" });
         return;
     }
     // Get Balance
