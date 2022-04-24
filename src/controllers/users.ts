@@ -1,11 +1,9 @@
 import { asyncHandler } from "../middlewares/asyncHandlerFn";
 import { User } from "../models/User";
-import LNPayService from "../services/Pay";
 
 // GET user
 export const userInfo = asyncHandler(async (req: any, res: any) => {
   const { id } = req.query;
-
   if (!id) {
     res.status(404).json({ success: false, message: "No User id Provided" });
   }
@@ -17,9 +15,7 @@ export const userInfo = asyncHandler(async (req: any, res: any) => {
     return;
   }
 
-  // Get Balance
-  const wallet = await LNPayService.getWallet();
-  res.status(200).json({ success: true, user, wallet });
+  res.status(200).json({ success: true, user });
 });
 
 // Update username

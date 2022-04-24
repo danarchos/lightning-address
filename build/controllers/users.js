@@ -8,14 +8,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.changeEmail = exports.changeUsername = exports.userInfo = void 0;
 const asyncHandlerFn_1 = require("../middlewares/asyncHandlerFn");
 const User_1 = require("../models/User");
-const Pay_1 = __importDefault(require("../services/Pay"));
 // GET user
 exports.userInfo = (0, asyncHandlerFn_1.asyncHandler)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.query;
@@ -28,9 +24,7 @@ exports.userInfo = (0, asyncHandlerFn_1.asyncHandler)((req, res) => __awaiter(vo
         res.status(400).json({ success: false, message: "No user found" });
         return;
     }
-    // Get Balance
-    const wallet = yield Pay_1.default.getWallet();
-    res.status(200).json({ success: true, user, wallet });
+    res.status(200).json({ success: true, user });
 }));
 // Update username
 exports.changeUsername = (0, asyncHandlerFn_1.asyncHandler)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
