@@ -22,5 +22,5 @@ app.use("/lightning", lnRouter);
 app.use("/user", userRouter);
 
 app.listen(PORT, () => {
-  console.log("LIGHTNING SERVICE RUNNING");
+  console.log("LIGHTNING SERVICE RUNNING ON PORT", PORT);
 });

@@ -9,7 +9,7 @@ const protectedRoute_1 = require("../middlewares/protectedRoute");
 const users_1 = require("../controllers/users");
 const auth_1 = require("../controllers/auth");
 exports.userRouter = express_1.default.Router();
-exports.userRouter.route("/user").get(protectedRoute_1.protect, users_1.user);
+exports.userRouter.route("/user-info").get(protectedRoute_1.protect, users_1.userInfo);
 exports.userRouter.route("/initiate-reset-password").post(auth_1.initiateResetPassword);
 exports.userRouter.route("/authenticate-reset-code").post(auth_1.authenticateResetCode);
 exports.userRouter.route("/change-username").post(protectedRoute_1.protect, users_1.changeUsername);

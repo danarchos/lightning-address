@@ -17,5 +17,5 @@ app.use((0, cors_1.default)());
 app.use("/lightning", ln_1.default);
 app.use("/user", user_1.userRouter);
 app.listen(PORT, () => {
-    console.log("LIGHTNING SERVICE RUNNING");
+    console.log("LIGHTNING SERVICE RUNNING ON PORT", PORT);
 });

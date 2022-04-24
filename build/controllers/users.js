@@ -8,12 +8,16 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.changeEmail = exports.changeUsername = exports.user = void 0;
+exports.changeEmail = exports.changeUsername = exports.userInfo = void 0;
 const asyncHandlerFn_1 = require("../middlewares/asyncHandlerFn");
 const User_1 = require("../models/User");
+const Pay_1 = __importDefault(require("../services/Pay"));
 // GET user
-exports.user = (0, asyncHandlerFn_1.asyncHandler)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.userInfo = (0, asyncHandlerFn_1.asyncHandler)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { email } = req.query;
     let user;
     if (email)
@@ -22,16 +26,23 @@ exports.user = (0, asyncHandlerFn_1.asyncHandler)((req, res) => __awaiter(void 0
         res.status(400).json({ success: false, message: "No email found" });
         return;
     }
-    res.status(200).json({ success: true, user });
+    // Get Balance
+    const wallet = yield Pay_1.default.getWallet();
+    res.status(200).json({ success: true, user, wallet });
 }));
 // Update username
 exports.changeUsername = (0, asyncHandlerFn_1.asyncHandler)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { username } = req.body;
+    if (!process.env.JWT_SECRET) {
+        res.status(500).json({ success: false, message: "Server Error" });
+        return;
+    }
     try {
         yield User_1.User.findOneAndUpdate({ id: req.decoded.id }, { username });
-        res
-            .status(200)
-            .json({ success: true, message: "Successfully updated username" });
+        res.status(200).json({
+            success: true,
+            message: "Successfully updated username",
+        });
     }
     catch (err) {
         res
@@ -42,15 +53,23 @@ exports.changeUsername = (0, asyncHandlerFn_1.asyncHandler)((req, res) => __awai
 // Update email
 exports.changeEmail = (0, asyncHandlerFn_1.asyncHandler)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { email } = req.body;
+    if (!process.env.JWT_SECRET) {
+        res.status(500).json({ success: false, message: "Server Error" });
+        return;
+    }
     if (!req.decoded.userId) {
-        res.status(404).json({ success: false, message: "Failed to change email" });
+        res.status(404).json({
+            success: false,
+            message: "Failed to change email",
+        });
         return;
     }
     try {
         yield User_1.User.findOneAndUpdate({ id: req.decoded.userId }, { email });
-        res
-            .status(200)
-            .json({ success: true, message: "Successfully updated email" });
+        res.status(200).json({
+            success: true,
+            message: "Successfully updated email",
+        });
     }
     catch (err) {
         res.status(500).json({ success: false, message: "Failed to change email" });

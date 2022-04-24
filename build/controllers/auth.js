@@ -25,6 +25,10 @@ const User_1 = require("../models/User");
 const ResetCode_1 = require("../models/ResetCode");
 // SIGN UP - Creates user model, adds salt to password, creates a JWT
 exports.signup = (0, asyncHandlerFn_1.asyncHandler)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    if (!JWT_SECRET) {
+        res.status(500).json({ success: false, message: "Server Error" });
+        return;
+    }
     try {
         const newUser = new User_1.User(req.body);
         const result = yield Pay_1.default.createWallet(req.body.username);
@@ -34,14 +38,9 @@ exports.signup = (0, asyncHandlerFn_1.asyncHandler)((req, res) => __awaiter(void
         const user = yield newUser.save();
         const payload = {
             userId: user._id,
-            username: user.username,
             walletId: user.wallet.id,
             recieveKey: user.wallet.recieveKey,
         };
-        if (!JWT_SECRET) {
-            res.status(500).json({ success: false, message: "Server Error" });
-            return;
-        }
         const token = jsonwebtoken_1.default.sign(payload, JWT_SECRET, {
             expiresIn: JWT_EXPIRE,
         });
@@ -54,6 +53,13 @@ exports.signup = (0, asyncHandlerFn_1.asyncHandler)((req, res) => __awaiter(void
 // LOGIN
 const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { password, email } = req.body;
+    if (!JWT_SECRET) {
+        res.status(500).json({
+            success: false,
+            message: "Server Error, can't create JWT Token",
+        });
+        return;
+    }
     try {
         let user;
         if (email)
@@ -65,14 +71,9 @@ const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         }
         const payload = {
             userId: user._id,
-            username: user.username,
             walletId: user.wallet.id,
             recieveKey: user.wallet.recieveKey,
         };
-        if (!JWT_SECRET) {
-            res.status(500).json({ success: false, message: "Server Error" });
-            return;
-        }
         const token = jsonwebtoken_1.default.sign(payload, JWT_SECRET, {
             expiresIn: JWT_EXPIRE,
         });
@@ -92,29 +93,31 @@ const initiateResetPassword = (req, res) => __awaiter(void 0, void 0, void 0, fu
     // Check email exists in db
     const foundUser = yield User_1.User.findOne({ email });
     if (!foundUser) {
-        res.status(404).json({ success: false, message: "No user with that email address" });
+        res
+            .status(404)
+            .json({ success: false, message: "No user with that email address" });
         return;
     }
     // Delete old codes with that email
     yield ResetCode_1.ResetCode.deleteMany({ email });
     // Generate a code
     const randomBytes = crypto_1.default.randomBytes(2);
-    const code = parseInt(randomBytes.toString('hex'), 16);
+    const code = parseInt(randomBytes.toString("hex"), 16);
     // Save the code in the database with the userid and username, and email
     const newCode = new ResetCode_1.ResetCode({ email, code });
     yield newCode.save();
     // Send the code to the email adddress
     mail_1.default.setApiKey((_a = process.env.SENDGRID_API_KEY) !== null && _a !== void 0 ? _a : "");
     const msg = {
-        to: 'dr.mcgrane@gmail.com',
-        from: 'dr.mcgrane@gmail.com',
-        subject: 'Reset your password',
+        to: "dr.mcgrane@gmail.com",
+        from: "dr.mcgrane@gmail.com",
+        subject: "Reset your password",
         text: code.toString(),
     };
     mail_1.default
         .send(msg)
         .then(() => {
-        console.log('Email sent');
+        console.log("Email sent");
     })
         .catch((error) => {
         console.error(error);
