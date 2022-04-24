@@ -15,7 +15,10 @@ export const userInfo = asyncHandler(async (req: any, res: any) => {
     return;
   }
 
-  res.status(200).json({ success: true, user });
+  res.status(200).json({
+    success: true,
+    user: { email: user.email, username: user.username, id: user.id },
+  });
 });
 
 // Update username

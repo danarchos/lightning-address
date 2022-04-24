@@ -24,7 +24,10 @@ exports.userInfo = (0, asyncHandlerFn_1.asyncHandler)((req, res) => __awaiter(vo
         res.status(400).json({ success: false, message: "No user found" });
         return;
     }
-    res.status(200).json({ success: true, user });
+    res.status(200).json({
+        success: true,
+        user: { email: user.email, username: user.username, id: user.id },
+    });
 }));
 // Update username
 exports.changeUsername = (0, asyncHandlerFn_1.asyncHandler)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
