@@ -14,6 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.LNPayEvents = void 0;
 const events_1 = require("events");
+const axios_1 = __importDefault(require("axios"));
 const lnpay_1 = __importDefault(require("lnpay"));
 require("dotenv").config();
 exports.LNPayEvents = {
@@ -21,7 +22,9 @@ exports.LNPayEvents = {
 };
 class LNPayService extends events_1.EventEmitter {
     constructor() {
-        super(...arguments);
+        super();
+        this.secretKey = "";
+        this.walletAccessKey = "";
         this.createWallet = (username) => __awaiter(this, void 0, void 0, function* () {
             try {
                 const client = (0, lnpay_1.default)({
@@ -44,6 +47,20 @@ class LNPayService extends events_1.EventEmitter {
             }
             catch (error) {
                 console.error(error);
+            }
+        });
+        this.createLnAddress = (username) => __awaiter(this, void 0, void 0, function* () {
+            const key = "waka_OWuCnc5qfAPc9uJ1W215qTL";
+            // Getting bad request, currently being fixed.
+            try {
+                const result = yield this.api.post(`/wallet/${key}/lnurlp`, {
+                    identifier: "testuser123abc@juna.to",
+                    custy_domain_id: "cdom_QJfUaCsn",
+                });
+                console.log({ result: result.response });
+            }
+            catch (err) {
+                console.log({ err: err.response });
             }
         });
         this.getWallet = () => __awaiter(this, void 0, void 0, function* () {
@@ -109,6 +126,14 @@ class LNPayService extends events_1.EventEmitter {
             catch (err) {
                 console.log({ err });
             }
+        });
+        this.secretKey = "sak_g0jIDuMNqq9XsOufjY8D3IyV4ERssDwS";
+        this.walletAccessKey = "waka_T6xytEWyvIhImThC4dZj4GXl";
+        this.api = axios_1.default.create({
+            baseURL: "https://api.lnpay.co/v1",
+            headers: {
+                "X-API-Key": "sak_g0jIDuMNqq9XsOufjY8D3IyV4ERssDwS",
+            },
         });
     }
 }

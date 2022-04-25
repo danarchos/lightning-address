@@ -1,4 +1,5 @@
 import { EventEmitter } from "events";
+import axios from "axios";
 import LNPay from "lnpay";
 require("dotenv").config();
 
@@ -7,6 +8,23 @@ export const LNPayEvents = {
 };
 
 class LNPayService extends EventEmitter {
+  secretKey = "";
+  walletAccessKey = "";
+  api: any;
+
+  constructor() {
+    super();
+
+    this.secretKey = "sak_g0jIDuMNqq9XsOufjY8D3IyV4ERssDwS";
+    this.walletAccessKey = "waka_T6xytEWyvIhImThC4dZj4GXl";
+    this.api = axios.create({
+      baseURL: "https://api.lnpay.co/v1",
+      headers: {
+        "X-API-Key": "sak_g0jIDuMNqq9XsOufjY8D3IyV4ERssDwS",
+      },
+    });
+  }
+
   createWallet = async (username: string) => {
     try {
       const client = LNPay({
@@ -31,6 +49,21 @@ class LNPayService extends EventEmitter {
       return wallet;
     } catch (error: any) {
       console.error(error);
+    }
+  };
+
+  createLnAddress = async (username: string) => {
+    const key = "waka_OWuCnc5qfAPc9uJ1W215qTL";
+
+    // Getting bad request, currently being fixed.
+    try {
+      const result = await this.api.post(`/wallet/${key}/lnurlp`, {
+        identifier: "testuser123abc@juna.to",
+        custy_domain_id: "cdom_QJfUaCsn",
+      });
+      console.log({ result: result.response });
+    } catch (err: any) {
+      console.log({ err: err.response });
     }
   };
 

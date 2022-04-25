@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.lightningAddress = exports.payInvoice = exports.generateInvoice = exports.getTxs = exports.getWallet = void 0;
+exports.lightningAddress = exports.payInvoice = exports.generateInvoice = exports.createLnAddress = exports.getTxs = exports.getWallet = void 0;
 const Pay_1 = __importDefault(require("../services/Pay"));
 const getWallet = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const wallet = yield Pay_1.default.getWallet();
@@ -24,6 +24,11 @@ const getTxs = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     res.status(200).json({ success: true, txs });
 });
 exports.getTxs = getTxs;
+const createLnAddress = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const address = yield Pay_1.default.createLnAddress("testuser123abc");
+    res.status(200).json({ success: true });
+});
+exports.createLnAddress = createLnAddress;
 const generateInvoice = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { amount } = req.query;
     if (!amount)
