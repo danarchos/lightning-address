@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.payInvoice = exports.generateInvoice = exports.getTxs = exports.getWallet = void 0;
+exports.lightningAddress = exports.payInvoice = exports.generateInvoice = exports.getTxs = exports.getWallet = void 0;
 const Pay_1 = __importDefault(require("../services/Pay"));
 const getWallet = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const wallet = yield Pay_1.default.getWallet();
@@ -40,3 +40,10 @@ const payInvoice = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     res.status(200).json({ success: true, result });
 });
 exports.payInvoice = payInvoice;
+const lightningAddress = (req, res) => {
+    if (!req.params.username) {
+        res.status(404).json({ success: true, message: "Please provide username" });
+    }
+    res.redirect(`https://lnaddr.lnpay.co/.well-known/lnurlp/${req.params.username}`);
+};
+exports.lightningAddress = lightningAddress;

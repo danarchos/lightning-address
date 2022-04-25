@@ -8,6 +8,7 @@ const { app } = expressWs(express());
 
 import lnRouter from "./routes/ln";
 import { userRouter } from "./routes/user";
+import { wellKnown } from "./routes/well-known";
 
 mongoose.connect(
   `mongodb+srv://${process.env.MONGODB_USERNAME}:${process.env.MONGODB_PASSWORD}@cluster0.obak4.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`
@@ -20,6 +21,7 @@ app.use(cors());
 
 app.use("/lightning", lnRouter);
 app.use("/user", userRouter);
+app.use("/.well-known", wellKnown);
 
 app.listen(PORT, () => {
   console.log("LIGHTNING SERVICE RUNNING ON PORT", PORT);

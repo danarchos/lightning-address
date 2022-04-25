@@ -10,12 +10,14 @@ const mongoose_1 = __importDefault(require("mongoose"));
 const { app } = (0, express_ws_1.default)((0, express_1.default)());
 const ln_1 = __importDefault(require("./routes/ln"));
 const user_1 = require("./routes/user");
+const well_known_1 = require("./routes/well-known");
 mongoose_1.default.connect(`mongodb+srv://${process.env.MONGODB_USERNAME}:${process.env.MONGODB_PASSWORD}@cluster0.obak4.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`);
 const PORT = process.env.PORT || 5000;
 app.use(express_1.default.json());
 app.use((0, cors_1.default)());
 app.use("/lightning", ln_1.default);
 app.use("/user", user_1.userRouter);
+app.use("/.well-known", well_known_1.wellKnown);
 app.listen(PORT, () => {
     console.log("LIGHTNING SERVICE RUNNING ON PORT", PORT);
 });
