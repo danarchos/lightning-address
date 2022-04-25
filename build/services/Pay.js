@@ -51,13 +51,14 @@ class LNPayService extends events_1.EventEmitter {
         });
         this.createLnAddress = (username) => __awaiter(this, void 0, void 0, function* () {
             const key = "waka_OWuCnc5qfAPc9uJ1W215qTL";
-            // Getting bad request, currently being fixed.
             try {
-                const result = yield this.api.post(`/wallet/${key}/lnurlp`, {
-                    identifier: "testuser123abc@juna.to",
-                    custy_domain_id: "cdom_QJfUaCsn",
-                });
-                console.log({ result: result.response });
+                // const result = await this.api.post(`/wallet/${key}/lnurlp`, {
+                //   identifier: "testuser123abc@juna.to",
+                //   custy_domain_id: "cdom_QJfUaCsn",
+                // });
+                // console.log({ result: result.response });
+                // return the ln address
+                return "newuser@juna.to";
             }
             catch (err) {
                 console.log({ err: err.response });

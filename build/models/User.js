@@ -11,6 +11,7 @@ const UserSchema = new Schema({
     username: { type: String, required: true, unique: true },
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
+    lnAddress: { type: String, required: true },
     wallet: {
         id: { type: String, required: true },
         masterKey: { type: String, required: true },
