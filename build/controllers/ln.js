@@ -25,8 +25,8 @@ const getTxs = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
 });
 exports.getTxs = getTxs;
 const createLnAddress = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const address = yield Pay_1.default.createLnAddress("testuser123abc");
-    res.status(200).json({ success: true });
+    const data = yield Pay_1.default.createLnAddress("testuser123abc");
+    res.status(200).json(Object.assign({ success: true }, data));
 });
 exports.createLnAddress = createLnAddress;
 const generateInvoice = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
