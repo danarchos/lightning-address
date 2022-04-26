@@ -1,4 +1,4 @@
-import { Response, Request } from "express";
+import e, { Response, Request } from "express";
 import LNPayService from "../services/Pay";
 
 export const getWallet = async (req: Request, res: Response) => {
@@ -30,15 +30,29 @@ export const payInvoice = async (req: Request, res: Response) => {
   res.status(200).json({ success: true, result });
 };
 
-export const lightningAddress = (req: Request, res: Response) => {
+export const initiateLnurlPayAddress = (req: Request, res: Response) => {
   if (!req.params.username) {
     res.status(404).json({ success: true, message: "Please provide username" });
   }
 
-  const customDomainId = "cdom_QJfUaCsn";
+  const response = {
+    minSendable: 1000,
+    maxSendable: 10000000,
+    commentAllowed: 0,
+    tag: "payRequest",
+    meta: '[["text\\/plain","Test"]]',
+    callback: "http://juna.to/lightning/execute-lnurl-pay-address",
+  };
 
-  res.redirect(
-    301,
-    `https://${customDomainId}.lnpay.co/.well-known/lnurlp/${req.params.username}`
+  res.status(200).json({ ...response });
+};
+
+export const executeLnurlPayAddress = async (req: Request, res: Response) => {
+  const { amount } = req.query;
+
+  const invoice = await LNPayService.generateInvoice(
+    parseInt(amount as string)
   );
+
+  res.status(200).json({ pr: invoice.payment_request, routes: [] });
 };

@@ -1,7 +1,6 @@
+import { initiateLnurlPayAddress } from "../controllers/ln";
 import express from "express";
-
-import { lightningAddress } from "../controllers/ln";
 
 export const wellKnown = express.Router();
 
-wellKnown.route("/lnurlp/:username").get(lightningAddress);
+wellKnown.route("/lnurlp/:username").get(initiateLnurlPayAddress);

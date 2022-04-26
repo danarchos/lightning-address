@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.lightningAddress = exports.payInvoice = exports.generateInvoice = exports.getTxs = exports.getWallet = void 0;
+exports.executeLnurlPayAddress = exports.initiateLnurlPayAddress = exports.payInvoice = exports.generateInvoice = exports.getTxs = exports.getWallet = void 0;
 const Pay_1 = __importDefault(require("../services/Pay"));
 const getWallet = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const wallet = yield Pay_1.default.getWallet();
@@ -40,11 +40,24 @@ const payInvoice = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     res.status(200).json({ success: true, result });
 });
 exports.payInvoice = payInvoice;
-const lightningAddress = (req, res) => {
+const initiateLnurlPayAddress = (req, res) => {
     if (!req.params.username) {
         res.status(404).json({ success: true, message: "Please provide username" });
     }
-    const customDomainId = "cdom_QJfUaCsn";
-    res.redirect(301, `https://${customDomainId}.lnpay.co/.well-known/lnurlp/${req.params.username}`);
+    const response = {
+        minSendable: 1000,
+        maxSendable: 10000000,
+        commentAllowed: 0,
+        tag: "payRequest",
+        meta: '[["text\\/plain","Test"]]',
+        callback: "http://juna.to/lightning/execute-lnurl-pay-address",
+    };
+    res.status(200).json(Object.assign({}, response));
 };
-exports.lightningAddress = lightningAddress;
+exports.initiateLnurlPayAddress = initiateLnurlPayAddress;
+const executeLnurlPayAddress = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { amount } = req.query;
+    const invoice = yield Pay_1.default.generateInvoice(parseInt(amount));
+    res.status(200).json({ pr: invoice.payment_request, routes: [] });
+});
+exports.executeLnurlPayAddress = executeLnurlPayAddress;
