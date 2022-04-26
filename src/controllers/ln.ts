@@ -38,6 +38,7 @@ export const lightningAddress = (req: Request, res: Response) => {
   const customDomainId = "cdom_QJfUaCsn";
 
   res.redirect(
+    301,
     `https://${customDomainId}.lnpay.co/.well-known/lnurlp/${req.params.username}`
   );
 };
