@@ -40,7 +40,9 @@ export const lightningAddress = (req: Request, res: Response) => {
     res.status(404).json({ success: true, message: "Please provide username" });
   }
 
+  const customDomainId = "cdom_QJfUaCsn";
+
   res.redirect(
-    `https://lnaddr.lnpay.co/.well-known/lnurlp/${req.params.username}`
+    `https://${customDomainId}.lnpay.co/.well-known/lnurlp/${req.params.username}`
   );
 };

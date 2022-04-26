@@ -57,7 +57,7 @@ class LNPayService extends EventEmitter {
 
     try {
       const result = await this.api.post(`/wallet/${key}/lnurlp`, {
-        identifier: "testuser123abc@juna.to",
+        lnurlp_identifier: "testuser123abc@juna.to",
         custy_domain_id: "cdom_QJfUaCsn",
       });
 
