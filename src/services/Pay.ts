@@ -56,14 +56,27 @@ class LNPayService extends EventEmitter {
     const key = "waka_OWuCnc5qfAPc9uJ1W215qTL";
 
     try {
-      // const result = await this.api.post(`/wallet/${key}/lnurlp`, {
-      //   identifier: "testuser123abc@juna.to",
-      //   custy_domain_id: "cdom_QJfUaCsn",
-      // });
-      // console.log({ result: result.response });
+      const result = await this.api.post(`/wallet/${key}/lnurlp`, {
+        identifier: "testuser123abc@juna.to",
+        custy_domain_id: "cdom_QJfUaCsn",
+      });
 
-      // return the ln address
-      return "newuser@juna.to";
+      const lnAddress = {
+        address: `${username}@juna.to`,
+        id: result.data.id,
+        description: result.data.lnurlp_short_desc,
+        min: result.data.lnurlp_minSendable_msat,
+        max: result.data.lnurlp_maxSendable_msat,
+        createdAt: result.data.createdAt,
+        lnurlDecoded: result.data.lnurl_decoded,
+        domainId: result.data.custyDomain.id,
+        domainDisplayName: result.data.custyDomain.display_name,
+        statusType: result.data.statusType.type,
+        status: result.data.statusType.name,
+        statusDisplay: result.data.statusType.display_name,
+      };
+
+      return lnAddress;
     } catch (err: any) {
       console.log({ err: err.response });
     }

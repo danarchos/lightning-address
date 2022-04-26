@@ -21,7 +21,10 @@ export const signup = asyncHandler(async (req: any, res: any) => {
     const newUser = new User(req.body);
 
     const result = await LNPay.createWallet(req.body.username);
-    const lnAddress = await LNPay.createLnAddress(req.body.username);
+
+    let testusername = "testuser123abc";
+    // use req.body.username when ready
+    const lnAddress = await LNPay.createLnAddress(testusername);
 
     newUser.wallet = { ...result };
     newUser.lnAddress = lnAddress;

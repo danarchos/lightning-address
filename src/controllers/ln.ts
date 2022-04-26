@@ -12,8 +12,8 @@ export const getTxs = async (req: Request, res: Response) => {
 };
 
 export const createLnAddress = async (req: Request, res: Response) => {
-  const address = await LNPayService.createLnAddress("testuser123abc");
-  res.status(200).json({ success: true });
+  const data = await LNPayService.createLnAddress("testuser123abc");
+  res.status(200).json({ success: true, ...data });
 };
 
 export const generateInvoice = async (req: Request, res: Response) => {
