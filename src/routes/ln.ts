@@ -4,7 +4,6 @@ import {
   generateInvoice,
   payInvoice,
   getTxs,
-  initiateLnurlPayAddress,
   executeLnurlPayAddress,
 } from "../controllers/ln";
 import { events, receiveCallback } from "../controllers/events";
