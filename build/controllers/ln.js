@@ -47,10 +47,9 @@ const initiateLnurlPayAddress = (req, res) => {
     const response = {
         minSendable: 1000,
         maxSendable: 10000000,
-        commentAllowed: 0,
         tag: "payRequest",
-        meta: '[["text\\/plain","Test"]]',
-        callback: "https://juna.to/lightning/execute-lnurl-pay-address",
+        meta: '[["text/plain","Test"]]',
+        callback: "http://juna.to/lightning/execute-lnurl-pay-address",
     };
     res.status(200).json(Object.assign({}, response));
 };
