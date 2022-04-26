@@ -11,11 +11,6 @@ export const getTxs = async (req: Request, res: Response) => {
   res.status(200).json({ success: true, txs });
 };
 
-export const createLnAddress = async (req: Request, res: Response) => {
-  const data = await LNPayService.createLnAddress("testuser123abc");
-  res.status(200).json({ success: true, ...data });
-};
-
 export const generateInvoice = async (req: Request, res: Response) => {
   const { amount } = req.query;
   if (!amount) return;

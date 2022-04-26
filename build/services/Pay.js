@@ -53,11 +53,11 @@ class LNPayService extends events_1.EventEmitter {
             const key = "waka_OWuCnc5qfAPc9uJ1W215qTL";
             try {
                 const result = yield this.api.post(`/wallet/${key}/lnurlp`, {
-                    lnurlp_identifier: "testuser123abc@juna.to",
+                    lnurlp_identifier: username,
                     custy_domain_id: "cdom_QJfUaCsn",
                 });
                 const lnAddress = {
-                    address: `${username}@juna.to`,
+                    address: username,
                     id: result.data.id,
                     description: result.data.lnurlp_short_desc,
                     min: result.data.lnurlp_minSendable_msat,

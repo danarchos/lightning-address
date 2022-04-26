@@ -56,27 +56,42 @@ class LNPayService extends EventEmitter {
     const key = "waka_OWuCnc5qfAPc9uJ1W215qTL";
 
     try {
-      const result = await this.api.post(`/wallet/${key}/lnurlp`, {
-        lnurlp_identifier: "testuser123abc@juna.to",
-        custy_domain_id: "cdom_QJfUaCsn",
-      });
+      // const result = await this.api.post(`/wallet/${key}/lnurlp`, {
+      //   lnurlp_identifier: username,
+      //   custy_domain_id: "cdom_QJfUaCsn",
+      // });
 
-      const lnAddress = {
-        address: `${username}@juna.to`,
-        id: result.data.id,
-        description: result.data.lnurlp_short_desc,
-        min: result.data.lnurlp_minSendable_msat,
-        max: result.data.lnurlp_maxSendable_msat,
-        createdAt: result.data.createdAt,
-        lnurlDecoded: result.data.lnurl_decoded,
-        domainId: result.data.custyDomain.id,
-        domainDisplayName: result.data.custyDomain.display_name,
-        statusType: result.data.statusType.type,
-        status: result.data.statusType.name,
-        statusDisplay: result.data.statusType.display_name,
+      // const lnAddress = {
+      //   address: username,
+      //   id: result.data.id,
+      //   description: result.data.lnurlp_short_desc,
+      //   min: result.data.lnurlp_minSendable_msat,
+      //   max: result.data.lnurlp_maxSendable_msat,
+      //   createdAt: result.data.createdAt,
+      //   lnurlDecoded: result.data.lnurl_decoded,
+      //   domainId: result.data.custyDomain.id,
+      //   domainDisplayName: result.data.custyDomain.display_name,
+      //   statusType: result.data.statusType.type,
+      //   status: result.data.statusType.name,
+      //   statusDisplay: result.data.statusType.display_name,
+      // };
+
+      const testlnAddress = {
+        address: "testuser@juna.to",
+        id: "test-id",
+        description: "test desc",
+        min: 1000,
+        max: 100000000,
+        createdAt: 32141241,
+        lnurlDecoded: "test",
+        domainId: "cdom_QJfUaCsn",
+        domainDisplayName: "test",
+        statusType: "test",
+        status: "test",
+        statusDisplay: "test",
       };
 
-      return lnAddress;
+      return testlnAddress;
     } catch (err: any) {
       console.log({ err: err.response });
     }
