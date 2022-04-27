@@ -41,8 +41,7 @@ export const signup = asyncHandler(async (req: any, res: any) => {
     return;
   }
 
-  const strongPassword =
-    /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*]).{8,}$/;
+  const strongPassword = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).{8,}$/;
   if (!strongPassword.test(req.body.password)) {
     res.status(200).json({
       success: false,

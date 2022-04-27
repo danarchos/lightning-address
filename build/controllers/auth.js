@@ -49,7 +49,7 @@ exports.signup = (0, asyncHandlerFn_1.asyncHandler)((req, res) => __awaiter(void
         res.status(200).json({ success: false, message: "Username Taken" });
         return;
     }
-    const strongPassword = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*]).{8,}$/;
+    const strongPassword = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).{8,}$/;
     if (!strongPassword.test(req.body.password)) {
         res.status(200).json({
             success: false,
