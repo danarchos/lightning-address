@@ -49,9 +49,14 @@ export const initiateLnurlPayAddress = (req: Request, res: Response) => {
 export const executeLnurlPayAddress = async (req: Request, res: Response) => {
   const { amount } = req.query;
 
-  const invoice = await LNPayService.generateInvoice(
-    parseInt(amount as string)
-  );
+  const inSatoshis = parseInt(amount as string) / 1000;
+
+  if (inSatoshis < 1) {
+    res.status(402).json({ message: "Needs to be more than 1 sat" });
+    return;
+  }
+
+  const invoice = await LNPayService.generateInvoice(inSatoshis);
 
   res.status(200).json({ pr: invoice.payment_request, routes: [] });
 };

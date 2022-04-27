@@ -56,7 +56,12 @@ const initiateLnurlPayAddress = (req, res) => {
 exports.initiateLnurlPayAddress = initiateLnurlPayAddress;
 const executeLnurlPayAddress = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { amount } = req.query;
-    const invoice = yield Pay_1.default.generateInvoice(parseInt(amount));
+    const inSatoshis = parseInt(amount) / 1000;
+    if (inSatoshis < 1) {
+        res.status(402).json({ message: "Needs to be more than 1 sat" });
+        return;
+    }
+    const invoice = yield Pay_1.default.generateInvoice(inSatoshis);
     res.status(200).json({ pr: invoice.payment_request, routes: [] });
 });
 exports.executeLnurlPayAddress = executeLnurlPayAddress;
