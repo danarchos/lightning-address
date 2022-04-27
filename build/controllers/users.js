@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.changeEmail = exports.changeUsername = exports.userInfo = void 0;
+exports.changeEmail = exports.changeUsername = exports.checkUsername = exports.userInfo = void 0;
 const asyncHandlerFn_1 = require("../middlewares/asyncHandlerFn");
 const User_1 = require("../models/User");
 // GET user
@@ -28,6 +28,15 @@ exports.userInfo = (0, asyncHandlerFn_1.asyncHandler)((req, res) => __awaiter(vo
         success: true,
         user: { email: user.email, username: user.username, id: user.id },
     });
+}));
+exports.checkUsername = (0, asyncHandlerFn_1.asyncHandler)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { username } = req.query;
+    const foundUser = yield User_1.User.findOne({ username });
+    if (foundUser) {
+        res.status(200).json({ taken: true });
+        return;
+    }
+    res.status(200).json({ taken: false });
 }));
 // Update username
 exports.changeUsername = (0, asyncHandlerFn_1.asyncHandler)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
