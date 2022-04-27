@@ -33,7 +33,7 @@ exports.userInfo = (0, asyncHandlerFn_1.asyncHandler)((req, res) => __awaiter(vo
 exports.changeUsername = (0, asyncHandlerFn_1.asyncHandler)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { username } = req.body;
     if (!process.env.JWT_SECRET) {
-        res.status(500).json({ success: false, message: "Server Error" });
+        res.status(500).send("Internal server error!");
         return;
     }
     try {
@@ -44,9 +44,7 @@ exports.changeUsername = (0, asyncHandlerFn_1.asyncHandler)((req, res) => __awai
         });
     }
     catch (err) {
-        res
-            .status(500)
-            .json({ success: false, message: "Failed to change username" });
+        res.status(500).send("Internal server error!");
     }
 }));
 // Update email
