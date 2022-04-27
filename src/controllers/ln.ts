@@ -53,7 +53,7 @@ export const initiateLnurlPayAddress = async (req: Request, res: Response) => {
     minSendable: 1000,
     maxSendable: 10000000,
     tag: "payRequest",
-    metadata: '[["text/plain","Test"]]',
+    metadata: `[["text/plain","${userData.wallet.recieveKey}"]]`,
     callback: `https://juna.to/lightning/lnurlp/${userData.wallet.recieveKey}`,
   };
 
@@ -64,22 +64,24 @@ export const executeLnurlPayAddress = async (req: Request, res: Response) => {
   const { amount } = req.query;
 
   if (!amount) {
-    res
-      .status(400)
-      .json({ message: "Minimum amount is 1 Satoshi. Pay up, my dude." });
+    res.status(400).json({
+      success: false,
+      message: "Minimum amount is 1 Satoshi. Pay up, my dude.",
+    });
     return;
   }
   const inSatoshis = parseInt(amount as string) / 1000;
 
   if (inSatoshis < 1) {
-    res
-      .status(400)
-      .json({ message: "Minimum amount is 1 Satoshi. Pay up, my dude." });
+    res.status(400).json({
+      success: false,
+      message: "Minimum amount is 1 Satoshi. Pay up, my dude.",
+    });
     return;
   }
 
   const descriptionHash = createHash("sha256")
-    .update('[["text/plain","Test"]]')
+    .update(`[["text/plain","${req.params.walletId}"]]`)
     .digest("hex");
 
   const invoice = await LNPayService.generateInvoice({
