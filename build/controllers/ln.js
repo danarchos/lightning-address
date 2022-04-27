@@ -56,6 +56,7 @@ const initiateLnurlPayAddress = (req, res) => {
 exports.initiateLnurlPayAddress = initiateLnurlPayAddress;
 const executeLnurlPayAddress = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { amount } = req.query;
+    console.log("query", req.query);
     const inSatoshis = parseInt(amount) / 1000;
     if (inSatoshis < 1) {
         res.status(402).json({ message: "Needs to be more than 1 sat" });

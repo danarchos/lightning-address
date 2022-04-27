@@ -49,6 +49,8 @@ export const initiateLnurlPayAddress = (req: Request, res: Response) => {
 export const executeLnurlPayAddress = async (req: Request, res: Response) => {
   const { amount } = req.query;
 
+  console.log("query", req.query);
+
   const inSatoshis = parseInt(amount as string) / 1000;
 
   if (inSatoshis < 1) {
