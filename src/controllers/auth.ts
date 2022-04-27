@@ -21,33 +21,31 @@ export const signup = asyncHandler(async (req: any, res: any) => {
   }
 
   if (!req.body.username || !req.body.email || !req.body.password) {
-    res
-      .status(400)
-      .json({ success: false, message: "Missing username, email or password" });
+    res.status(400).send("Missing username, email or password");
     return;
   }
 
   const emailExists = await User.findOne({ email: req.body.email });
   if (emailExists) {
-    res
-      .status(400)
-      .json({ success: false, message: "Email address used previously." });
+    res.status(400).send("Email address used previously");
     return;
   }
 
   const usernameExists = await User.findOne({ username: req.body.username });
   if (usernameExists) {
-    res.status(400).json({ success: false, message: "Username taken" });
+    res.status(400).send("Username taken");
     return;
   }
 
   const strongPassword = /^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9]).{8}$/;
   if (!strongPassword.test(req.body.password)) {
-    res.status(400).json({
-      success: false,
-      message:
-        "Password must have 1 lowercase, 1 uppercase, 1 number and be min 8 characters",
-    });
+    res.status(400);
+    res
+      .status(400)
+      .send(
+        "Password must have 1 lowercase, 1 uppercase, 1 number and be min 8 characters"
+      );
+
     return;
   }
 

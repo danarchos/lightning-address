@@ -26,7 +26,7 @@ export const changeUsername = asyncHandler(async (req: any, res: any) => {
   const { username } = req.body;
 
   if (!process.env.JWT_SECRET) {
-    res.status(500).json({ success: false, message: "Server Error" });
+    res.status(500).send("Internal server error!");
     return;
   }
   try {
@@ -37,9 +37,7 @@ export const changeUsername = asyncHandler(async (req: any, res: any) => {
       message: "Successfully updated username",
     });
   } catch (err) {
-    res
-      .status(500)
-      .json({ success: false, message: "Failed to change username" });
+    res.status(500).send("Internal server error!");
   }
 });
 
