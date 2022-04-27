@@ -1,6 +1,7 @@
-import e, { Response, Request } from "express";
+import { Response, Request } from "express";
 import LNPayService from "../services/Pay";
-import { createHash, randomBytes } from "crypto";
+import { createHash } from "crypto";
+import { User } from "../models/User";
 
 export const getWallet = async (req: Request, res: Response) => {
   const wallet = await LNPayService.getWallet();
@@ -15,10 +16,10 @@ export const getTxs = async (req: Request, res: Response) => {
 export const generateInvoice = async (req: Request, res: Response) => {
   const { amount } = req.query;
   if (!amount) return;
-  const invoice = await LNPayService.generateInvoice(
-    parseInt(amount as string)
-  );
-  res.status(200).json({ success: true, invoice });
+  // const invoice = await LNPayService.generateInvoice(
+  //   parseInt(amount as string)
+  // );
+  res.status(200).json({ success: false, message: "Needs dev work" });
 };
 
 export const payInvoice = async (req: Request, res: Response) => {
@@ -31,9 +32,21 @@ export const payInvoice = async (req: Request, res: Response) => {
   res.status(200).json({ success: true, result });
 };
 
-export const initiateLnurlPayAddress = (req: Request, res: Response) => {
+export const initiateLnurlPayAddress = async (req: Request, res: Response) => {
   if (!req.params.username) {
-    res.status(404).json({ success: true, message: "Please provide username" });
+    res
+      .status(404)
+      .json({ success: false, message: "Please provide username" });
+  }
+
+  // Get the userId by username
+  const userData = await User.findOne({ username: req.params.username });
+
+  if (!userData) {
+    res
+      .status(404)
+      .json({ success: false, message: "No username that matches" });
+    return;
   }
 
   const response = {
@@ -41,7 +54,7 @@ export const initiateLnurlPayAddress = (req: Request, res: Response) => {
     maxSendable: 10000000,
     tag: "payRequest",
     metadata: '[["text/plain","Test"]]',
-    callback: "https://juna.to/lightning/execute-lnurl-pay-address",
+    callback: `https://juna.to/lightning/lnurlp/${userData.wallet.recieveKey}`,
   };
 
   res.status(200).json({ ...response });
@@ -61,10 +74,11 @@ export const executeLnurlPayAddress = async (req: Request, res: Response) => {
     return;
   }
 
-  const invoice = await LNPayService.generateInvoice(
-    inSatoshis,
-    descriptionHash
-  );
+  const invoice = await LNPayService.generateInvoice({
+    walletId: req.params.walletId,
+    sats: inSatoshis,
+    descriptionHash,
+  });
 
   res.status(200).json({ pr: invoice.payment_request, routes: [] });
 };

@@ -12,6 +12,6 @@ lnRouter.route("/get-txs").get(ln_1.getTxs);
 lnRouter.route("/invoice").get(ln_1.generateInvoice);
 lnRouter.route("/pay-invoice").post(ln_1.payInvoice);
 lnRouter.route("/wallet-recieve").post(events_1.receiveCallback);
-lnRouter.route("/execute-lnurl-pay-address").get(ln_1.executeLnurlPayAddress);
+lnRouter.route("/lnurlp/:walletId").get(ln_1.executeLnurlPayAddress);
 lnRouter.ws("/events", events_1.events);
 exports.default = lnRouter;

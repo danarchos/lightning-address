@@ -15,20 +15,6 @@ const UserSchema = new Schema({
     lnUrlWithdrawKey: { type: String, required: true },
     lnUrlPayKey: { type: String, required: true },
   },
-  lnAddress: {
-    address: String,
-    id: String,
-    description: String,
-    min: String,
-    max: String,
-    createdAt: String,
-    lnurlDecoded: String,
-    domainId: String,
-    domainDisplayName: String,
-    statusType: String,
-    status: String,
-    statusDisplay: String,
-  },
 });
 
 // A method that enables the comparison of password that have been salted

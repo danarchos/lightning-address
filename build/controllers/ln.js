@@ -15,6 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.executeLnurlPayAddress = exports.initiateLnurlPayAddress = exports.payInvoice = exports.generateInvoice = exports.getTxs = exports.getWallet = void 0;
 const Pay_1 = __importDefault(require("../services/Pay"));
 const crypto_1 = require("crypto");
+const User_1 = require("../models/User");
 const getWallet = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const wallet = yield Pay_1.default.getWallet();
     res.status(200).json({ success: true, wallet });
@@ -29,8 +30,10 @@ const generateInvoice = (req, res) => __awaiter(void 0, void 0, void 0, function
     const { amount } = req.query;
     if (!amount)
         return;
-    const invoice = yield Pay_1.default.generateInvoice(parseInt(amount));
-    res.status(200).json({ success: true, invoice });
+    // const invoice = await LNPayService.generateInvoice(
+    //   parseInt(amount as string)
+    // );
+    res.status(200).json({ success: false, message: "Needs dev work" });
 });
 exports.generateInvoice = generateInvoice;
 const payInvoice = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -41,19 +44,29 @@ const payInvoice = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     res.status(200).json({ success: true, result });
 });
 exports.payInvoice = payInvoice;
-const initiateLnurlPayAddress = (req, res) => {
+const initiateLnurlPayAddress = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     if (!req.params.username) {
-        res.status(404).json({ success: true, message: "Please provide username" });
+        res
+            .status(404)
+            .json({ success: false, message: "Please provide username" });
+    }
+    // Get the userId by username
+    const userData = yield User_1.User.findOne({ username: req.params.username });
+    if (!userData) {
+        res
+            .status(404)
+            .json({ success: false, message: "No username that matches" });
+        return;
     }
     const response = {
         minSendable: 1000,
         maxSendable: 10000000,
         tag: "payRequest",
         metadata: '[["text/plain","Test"]]',
-        callback: "https://juna.to/lightning/execute-lnurl-pay-address",
+        callback: `https://juna.to/lightning/lnurlp/${userData.wallet.recieveKey}`,
     };
     res.status(200).json(Object.assign({}, response));
-};
+});
 exports.initiateLnurlPayAddress = initiateLnurlPayAddress;
 const executeLnurlPayAddress = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { amount } = req.query;
@@ -65,7 +78,11 @@ const executeLnurlPayAddress = (req, res) => __awaiter(void 0, void 0, void 0, f
         res.status(402).json({ message: "Needs to be more than 1 sat" });
         return;
     }
-    const invoice = yield Pay_1.default.generateInvoice(inSatoshis, descriptionHash);
+    const invoice = yield Pay_1.default.generateInvoice({
+        walletId: req.params.walletId,
+        sats: inSatoshis,
+        descriptionHash,
+    });
     res.status(200).json({ pr: invoice.payment_request, routes: [] });
 });
 exports.executeLnurlPayAddress = executeLnurlPayAddress;

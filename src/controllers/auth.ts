@@ -22,12 +22,7 @@ export const signup = asyncHandler(async (req: any, res: any) => {
 
     const result = await LNPay.createWallet(req.body.username);
 
-    let testusername = "testuser123abc";
-    // use req.body.username when ready
-    const lnAddress = await LNPay.createLnAddress(testusername);
-
     newUser.wallet = { ...result };
-    newUser.lnAddress = lnAddress;
 
     const salt = await bcrypt.genSalt(10);
     newUser.password = await bcrypt.hash(newUser.password, salt);

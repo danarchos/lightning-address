@@ -32,11 +32,7 @@ exports.signup = (0, asyncHandlerFn_1.asyncHandler)((req, res) => __awaiter(void
     try {
         const newUser = new User_1.User(req.body);
         const result = yield Pay_1.default.createWallet(req.body.username);
-        let testusername = "testuser123abc";
-        // use req.body.username when ready
-        const lnAddress = yield Pay_1.default.createLnAddress(testusername);
         newUser.wallet = Object.assign({}, result);
-        newUser.lnAddress = lnAddress;
         const salt = yield bcryptjs_1.default.genSalt(10);
         newUser.password = yield bcryptjs_1.default.hash(newUser.password, salt);
         const user = yield newUser.save();

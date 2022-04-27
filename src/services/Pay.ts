@@ -7,6 +7,12 @@ export const LNPayEvents = {
   invoicePaid: "invoice-paid",
 };
 
+interface GenerateInvoice {
+  walletId: string;
+  descriptionHash?: string;
+  sats: number;
+}
+
 class LNPayService extends EventEmitter {
   secretKey = "";
   walletAccessKey = "";
@@ -125,15 +131,19 @@ class LNPayService extends EventEmitter {
     }
   };
 
-  generateInvoice = async (amount: number, descriptionHash?: string) => {
+  generateInvoice = async ({
+    sats,
+    walletId,
+    descriptionHash,
+  }: GenerateInvoice) => {
     try {
       const client = LNPay({
         secretKey: process.env.LNPAY_SECRET ?? "",
-        walletAccessKey: process.env.MASTER_KEY ?? "",
+        walletAccessKey: walletId,
       });
 
       const invoice = await client.generateInvoice({
-        num_satoshis: amount,
+        num_satoshis: sats,
         memo: "This is a memo",
         expiry: 86400,
         description_hash: descriptionHash ? descriptionHash : undefined,

@@ -120,15 +120,15 @@ class LNPayService extends events_1.EventEmitter {
                 console.error(error);
             }
         });
-        this.generateInvoice = (amount, descriptionHash) => __awaiter(this, void 0, void 0, function* () {
-            var _c, _d;
+        this.generateInvoice = ({ sats, walletId, descriptionHash, }) => __awaiter(this, void 0, void 0, function* () {
+            var _c;
             try {
                 const client = (0, lnpay_1.default)({
                     secretKey: (_c = process.env.LNPAY_SECRET) !== null && _c !== void 0 ? _c : "",
-                    walletAccessKey: (_d = process.env.MASTER_KEY) !== null && _d !== void 0 ? _d : "",
+                    walletAccessKey: walletId,
                 });
                 const invoice = yield client.generateInvoice({
-                    num_satoshis: amount,
+                    num_satoshis: sats,
                     memo: "This is a memo",
                     expiry: 86400,
                     description_hash: descriptionHash ? descriptionHash : undefined,
@@ -140,10 +140,10 @@ class LNPayService extends events_1.EventEmitter {
             }
         });
         this.payInvoice = (paymentRequest) => __awaiter(this, void 0, void 0, function* () {
-            var _e, _f;
+            var _d, _e;
             const lnpay = (0, lnpay_1.default)({
-                secretKey: (_e = process.env.LNPAY_SECRET) !== null && _e !== void 0 ? _e : "",
-                walletAccessKey: (_f = process.env.MASTER_KEY) !== null && _f !== void 0 ? _f : "",
+                secretKey: (_d = process.env.LNPAY_SECRET) !== null && _d !== void 0 ? _d : "",
+                walletAccessKey: (_e = process.env.MASTER_KEY) !== null && _e !== void 0 ? _e : "",
             });
             try {
                 const payInvoice = yield lnpay.payInvoice({
