@@ -70,14 +70,22 @@ const initiateLnurlPayAddress = (req, res) => __awaiter(void 0, void 0, void 0, 
 exports.initiateLnurlPayAddress = initiateLnurlPayAddress;
 const executeLnurlPayAddress = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { amount } = req.query;
+    if (!amount) {
+        res
+            .status(400)
+            .json({ message: "Minimum amount is 1 Satoshi. Pay up, my dude." });
+        return;
+    }
+    const inSatoshis = parseInt(amount) / 1000;
+    if (inSatoshis < 1) {
+        res
+            .status(400)
+            .json({ message: "Minimum amount is 1 Satoshi. Pay up, my dude." });
+        return;
+    }
     const descriptionHash = (0, crypto_1.createHash)("sha256")
         .update('[["text/plain","Test"]]')
         .digest("hex");
-    const inSatoshis = parseInt(amount) / 1000;
-    if (inSatoshis < 1) {
-        res.status(402).json({ message: "Needs to be more than 1 sat" });
-        return;
-    }
     const invoice = yield Pay_1.default.generateInvoice({
         walletId: req.params.walletId,
         sats: inSatoshis,

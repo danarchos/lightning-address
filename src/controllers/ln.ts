@@ -63,16 +63,24 @@ export const initiateLnurlPayAddress = async (req: Request, res: Response) => {
 export const executeLnurlPayAddress = async (req: Request, res: Response) => {
   const { amount } = req.query;
 
-  const descriptionHash = createHash("sha256")
-    .update('[["text/plain","Test"]]')
-    .digest("hex");
-
+  if (!amount) {
+    res
+      .status(400)
+      .json({ message: "Minimum amount is 1 Satoshi. Pay up, my dude." });
+    return;
+  }
   const inSatoshis = parseInt(amount as string) / 1000;
 
   if (inSatoshis < 1) {
-    res.status(402).json({ message: "Needs to be more than 1 sat" });
+    res
+      .status(400)
+      .json({ message: "Minimum amount is 1 Satoshi. Pay up, my dude." });
     return;
   }
+
+  const descriptionHash = createHash("sha256")
+    .update('[["text/plain","Test"]]')
+    .digest("hex");
 
   const invoice = await LNPayService.generateInvoice({
     walletId: req.params.walletId,
