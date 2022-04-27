@@ -158,6 +158,8 @@ export const initiateResetPassword = async (req: any, res: any) => {
     .catch((error: any) => {
       console.error(error);
     });
+
+  res.status(20).json({ success: true, message: "Sent email" });
 };
 
 export const authenticateResetCode = async (req: any, res: any) => {
