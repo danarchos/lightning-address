@@ -125,7 +125,7 @@ class LNPayService extends EventEmitter {
     }
   };
 
-  generateInvoice = async (amount: number) => {
+  generateInvoice = async (amount: number, descriptionHash?: string) => {
     try {
       const client = LNPay({
         secretKey: process.env.LNPAY_SECRET ?? "",
@@ -136,6 +136,7 @@ class LNPayService extends EventEmitter {
         num_satoshis: amount,
         memo: "This is a memo",
         expiry: 86400,
+        description_hash: descriptionHash ? descriptionHash : undefined,
       });
 
       return invoice;

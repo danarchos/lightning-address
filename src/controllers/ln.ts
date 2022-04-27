@@ -1,5 +1,6 @@
 import e, { Response, Request } from "express";
 import LNPayService from "../services/Pay";
+import { createHash, randomBytes } from "crypto";
 
 export const getWallet = async (req: Request, res: Response) => {
   const wallet = await LNPayService.getWallet();
@@ -49,7 +50,9 @@ export const initiateLnurlPayAddress = (req: Request, res: Response) => {
 export const executeLnurlPayAddress = async (req: Request, res: Response) => {
   const { amount } = req.query;
 
-  console.log("query", req.query);
+  const descriptionHash = createHash("sha256")
+    .update('[["text/plain","Test"]]')
+    .digest("hex");
 
   const inSatoshis = parseInt(amount as string) / 1000;
 
@@ -58,7 +61,10 @@ export const executeLnurlPayAddress = async (req: Request, res: Response) => {
     return;
   }
 
-  const invoice = await LNPayService.generateInvoice(inSatoshis);
+  const invoice = await LNPayService.generateInvoice(
+    inSatoshis,
+    descriptionHash
+  );
 
   res.status(200).json({ pr: invoice.payment_request, routes: [] });
 };

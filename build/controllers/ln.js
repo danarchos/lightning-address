@@ -14,6 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.executeLnurlPayAddress = exports.initiateLnurlPayAddress = exports.payInvoice = exports.generateInvoice = exports.getTxs = exports.getWallet = void 0;
 const Pay_1 = __importDefault(require("../services/Pay"));
+const crypto_1 = require("crypto");
 const getWallet = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const wallet = yield Pay_1.default.getWallet();
     res.status(200).json({ success: true, wallet });
@@ -56,13 +57,15 @@ const initiateLnurlPayAddress = (req, res) => {
 exports.initiateLnurlPayAddress = initiateLnurlPayAddress;
 const executeLnurlPayAddress = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { amount } = req.query;
-    console.log("query", req.query);
+    const descriptionHash = (0, crypto_1.createHash)("sha256")
+        .update('[["text/plain","Test"]]')
+        .digest("hex");
     const inSatoshis = parseInt(amount) / 1000;
     if (inSatoshis < 1) {
         res.status(402).json({ message: "Needs to be more than 1 sat" });
         return;
     }
-    const invoice = yield Pay_1.default.generateInvoice(inSatoshis);
+    const invoice = yield Pay_1.default.generateInvoice(inSatoshis, descriptionHash);
     res.status(200).json({ pr: invoice.payment_request, routes: [] });
 });
 exports.executeLnurlPayAddress = executeLnurlPayAddress;

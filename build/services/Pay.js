@@ -120,7 +120,7 @@ class LNPayService extends events_1.EventEmitter {
                 console.error(error);
             }
         });
-        this.generateInvoice = (amount) => __awaiter(this, void 0, void 0, function* () {
+        this.generateInvoice = (amount, descriptionHash) => __awaiter(this, void 0, void 0, function* () {
             var _c, _d;
             try {
                 const client = (0, lnpay_1.default)({
@@ -131,6 +131,7 @@ class LNPayService extends events_1.EventEmitter {
                     num_satoshis: amount,
                     memo: "This is a memo",
                     expiry: 86400,
+                    description_hash: descriptionHash ? descriptionHash : undefined,
                 });
                 return invoice;
             }
