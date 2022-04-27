@@ -159,7 +159,7 @@ export const initiateResetPassword = async (req: any, res: any) => {
       console.error(error);
     });
 
-  res.status(20).json({ success: true, message: "Sent email" });
+  res.status(200).json({ success: true, message: "Sent email" });
 };
 
 export const authenticateResetCode = async (req: any, res: any) => {

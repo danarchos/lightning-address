@@ -150,7 +150,7 @@ const initiateResetPassword = (req, res) => __awaiter(void 0, void 0, void 0, fu
         .catch((error) => {
         console.error(error);
     });
-    res.status(20).json({ success: true, message: "Sent email" });
+    res.status(200).json({ success: true, message: "Sent email" });
 });
 exports.initiateResetPassword = initiateResetPassword;
 const authenticateResetCode = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
