@@ -1,12 +1,7 @@
 import express from "express";
 import { protect } from "../middlewares/protectedRoute";
 
-import {
-  userInfo,
-  changeUsername,
-  changeEmail,
-  checkUsername,
-} from "../controllers/users";
+import { userInfo, changeUsername, changeEmail } from "../controllers/users";
 import {
   signup,
   login,
@@ -17,7 +12,6 @@ import {
 
 export const userRouter = express.Router();
 
-userRouter.route("/check-username").get(protect, checkUsername);
 userRouter.route("/user-info").get(protect, userInfo);
 userRouter.route("/initiate-reset-password").post(initiateResetPassword);
 userRouter.route("/authenticate-reset-code").post(authenticateResetCode);
