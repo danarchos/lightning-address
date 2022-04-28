@@ -185,6 +185,17 @@ export const resetNewPassword = async (req: any, res: any) => {
     return;
   }
 
+  const strongPassword = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).{8,}$/;
+  if (!strongPassword.test(req.body.newPassword)) {
+    res.status(200).json({
+      success: false,
+      message:
+        "Password must have 1 lowercase, 1 uppercase, 1 number and be min 8 characters",
+    });
+
+    return;
+  }
+
   const salt = await bcrypt.genSalt(10);
   const newPasswordWithSalt = await bcrypt.hash(newPassword, salt);
 

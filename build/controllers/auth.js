@@ -170,6 +170,14 @@ const resetNewPassword = (req, res) => __awaiter(void 0, void 0, void 0, functio
         res.status(401).json({ success: false, message: "Code incorrect" });
         return;
     }
+    const strongPassword = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).{8,}$/;
+    if (!strongPassword.test(req.body.newPassword)) {
+        res.status(200).json({
+            success: false,
+            message: "Password must have 1 lowercase, 1 uppercase, 1 number and be min 8 characters",
+        });
+        return;
+    }
     const salt = yield bcryptjs_1.default.genSalt(10);
     const newPasswordWithSalt = yield bcryptjs_1.default.hash(newPassword, salt);
     const newPass = yield User_1.User.findOneAndUpdate({ email }, { password: newPasswordWithSalt });
