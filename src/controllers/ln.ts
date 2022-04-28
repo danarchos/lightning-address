@@ -34,30 +34,40 @@ export const payInvoice = async (req: Request, res: Response) => {
 
 export const initiateLnurlPayAddress = async (req: Request, res: Response) => {
   if (!req.params.username) {
-    res
-      .status(404)
-      .json({ success: false, message: "Please provide username" });
+    res.status(404).json({ success: true, message: "Please provide username" });
   }
 
-  // Get the userId by username
-  const userData = await User.findOne({ username: req.params.username });
+  const customDomainId = "cdom_QJfUaCsn";
 
-  if (!userData) {
-    res
-      .status(404)
-      .json({ success: false, message: "No username that matches" });
-    return;
-  }
+  res.redirect(
+    `https://${customDomainId}.lnpay.co/.well-known/lnurlp/${req.params.username}`
+  );
 
-  const response = {
-    minSendable: 1000,
-    maxSendable: 10000000,
-    tag: "payRequest",
-    metadata: `[["text/plain","${userData.wallet.recieveKey}"]]`,
-    callback: `https://juna.to/lightning/lnurlp/${userData.wallet.recieveKey}`,
-  };
+  // if (!req.params.username) {
+  //   res
+  //     .status(404)
+  //     .json({ success: false, message: "Please provide username" });
+  // }
 
-  res.status(200).json({ ...response });
+  // // Get the userId by username
+  // const userData = await User.findOne({ username: req.params.username });
+
+  // if (!userData) {
+  //   res
+  //     .status(404)
+  //     .json({ success: false, message: "No username that matches" });
+  //   return;
+  // }
+
+  // const response = {
+  //   minSendable: 1000,
+  //   maxSendable: 10000000,
+  //   tag: "payRequest",
+  //   metadata: `[["text/plain","${userData.wallet.recieveKey}"]]`,
+  //   callback: `https://juna.to/lightning/lnurlp/${userData.wallet.recieveKey}`,
+  // };
+
+  // res.status(200).json({ ...response });
 };
 
 export const executeLnurlPayAddress = async (req: Request, res: Response) => {
