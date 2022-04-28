@@ -15,6 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.executeLnurlPayAddress = exports.initiateLnurlPayAddress = exports.payInvoice = exports.generateInvoice = exports.getTxs = exports.getWallet = void 0;
 const Pay_1 = __importDefault(require("../services/Pay"));
 const crypto_1 = require("crypto");
+const User_1 = require("../models/User");
 const getWallet = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const wallet = yield Pay_1.default.getWallet();
     res.status(200).json({ success: true, wallet });
@@ -45,31 +46,26 @@ const payInvoice = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
 exports.payInvoice = payInvoice;
 const initiateLnurlPayAddress = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     if (!req.params.username) {
-        res.status(404).json({ success: true, message: "Please provide username" });
+        res
+            .status(404)
+            .json({ success: false, message: "Please provide username" });
     }
-    const customDomainId = "cdom_QJfUaCsn";
-    res.redirect(`https://${customDomainId}.lnpay.co/.well-known/lnurlp/${req.params.username}`);
-    // if (!req.params.username) {
-    //   res
-    //     .status(404)
-    //     .json({ success: false, message: "Please provide username" });
-    // }
-    // // Get the userId by username
-    // const userData = await User.findOne({ username: req.params.username });
-    // if (!userData) {
-    //   res
-    //     .status(404)
-    //     .json({ success: false, message: "No username that matches" });
-    //   return;
-    // }
-    // const response = {
-    //   minSendable: 1000,
-    //   maxSendable: 10000000,
-    //   tag: "payRequest",
-    //   metadata: `[["text/plain","${userData.wallet.recieveKey}"]]`,
-    //   callback: `https://juna.to/lightning/lnurlp/${userData.wallet.recieveKey}`,
-    // };
-    // res.status(200).json({ ...response });
+    // Get the userId by username
+    const userData = yield User_1.User.findOne({ username: req.params.username });
+    if (!userData) {
+        res
+            .status(404)
+            .json({ success: false, message: "No username that matches" });
+        return;
+    }
+    const response = {
+        minSendable: 1000,
+        maxSendable: 10000000,
+        tag: "payRequest",
+        metadata: `[["text/plain","${userData.wallet.recieveKey}"]]`,
+        callback: `https://juna.to/lightning/lnurlp/${userData.wallet.recieveKey}`,
+    };
+    res.status(200).json(Object.assign({}, response));
 });
 exports.initiateLnurlPayAddress = initiateLnurlPayAddress;
 const executeLnurlPayAddress = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
