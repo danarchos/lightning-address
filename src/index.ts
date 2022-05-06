@@ -1,27 +1,15 @@
 import express from "express";
-import expressWs from "express-ws";
-
 import cors from "cors";
-import mongoose from "mongoose";
+import { router } from "./routes";
 
-const { app } = expressWs(express());
-
-import lnRouter from "./routes/ln";
-import { userRouter } from "./routes/user";
-import { wellKnown } from "./routes/well-known";
-
-mongoose.connect(
-  `mongodb+srv://${process.env.MONGODB_USERNAME}:${process.env.MONGODB_PASSWORD}@cluster0.obak4.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`
-);
+const app = express();
 
 const PORT = process.env.PORT || 5000;
 
 app.use(express.json());
 app.use(cors());
 
-app.use("/lightning", lnRouter);
-app.use("/user", userRouter);
-app.use("/.well-known", wellKnown);
+app.use("/api", router);
 
 app.listen(PORT, () => {
   console.log("LIGHTNING SERVICE RUNNING ON PORT", PORT);
