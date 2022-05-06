@@ -3,15 +3,3 @@
 
 node_modules
 yarn.lock
-
-user/node_modules
-user/yarn.lock
-
-video/node_modules
-video/yarn.lock
-
-history/node_modules
-history/yarn.lock
-
-lightning/node_modules
-lightning/yarn.lock
