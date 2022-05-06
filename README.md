@@ -1,3 +1,2 @@
-# juna-backend
+# Express starter template
 
-Built with Node Express
