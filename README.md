@@ -5,5 +5,5 @@
 ### Lightning Address Docs
 https://lightningaddress.com/
 
-
-
+### Todo
+  - Add pay-to-lightning address
